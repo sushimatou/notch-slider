@@ -13,19 +13,32 @@ class NotchSlider: UISlider {
     // MARK: Notch View Definition
     
     private final class NotchView: UIView {
-        private let displayedValue: Int
+        
+        let value: Int
         private let radius: Float
-        private let abscisse: Float
-        init(displayedValue: Int, radius: Float, abscisse: Float) {
-            self.displayedValue = displayedValue
+        private let abscisse: CGFloat
+        private let valueLabel: UILabel
+        private var point: UIView
+        
+        init(displayedValue: Int, radius: Float, abscisse: CGFloat) {
+            self.value = displayedValue
             self.radius = radius
             self.abscisse = abscisse
             super.init(frame: .zero)
+            
+            let point = UIView(frame: CGRect(
+                x: center,
+                y: 0,
+                width: radius * 2,
+                height: frame.height))
+            
+            let label = UILabel()
+            label.text = "\(displayedValue)"
         }
-        
         required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
+        
     }
     
     // MARK: Properties
@@ -35,7 +48,7 @@ class NotchSlider: UISlider {
     private let notchesCount: Int
     private let notchRadius: Float
     private var notches = [CGPoint]()
-    private var notchesViews = [NotchView]
+    private var notchViews = [NotchView]()
     var delegate: NotchSliderDelegate?
 
     
@@ -57,13 +70,23 @@ class NotchSlider: UISlider {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: UI Render
+    
+    private func render() {
+        minimumTrackTintColor = primaryColor
+        maximumTrackTintColor = secondaryColor
+        createNotchPoints()
+        createNotchViews()
+    }
+    
     // MARK: Set Value Selector
 
     @objc private func valueDidChanged() {
         delegate?.valueDidChange(value: self.value)
     }
     
-    // MARK: Create Notches
+    
+    // MARK: Create Notches Points
     
     private func createNotchPoints() {
         for notchRange in 0...notchesCount-1 {
@@ -72,33 +95,26 @@ class NotchSlider: UISlider {
             notches.append(notchPoint)
         }
     }
+
+    // MARK: Create Notches Views
     
-    
-    
-    private func createNotchView(notches: [Notch]) -> [NotchView] {
+    private func createNotchViews(){
         for notchRange in 0...notchesCount-1 {
             let notchView = NotchView(
                 displayedValue: notchRange + Int(minimumValue),
                 radius: notchRadius,
-                abscisse: Float(notchRange/notchesCount-1) * Float(frame.width))
+                abscisse: notches[notchRange].x)
+            addSubview(notchView)
         }
     }
     
-    private func createNotches() {
-        for notchView in notchView {
-            let notch = Notch(
-                value: minimumValue + Float(notchRange),
-                view: )
-        }
-    }
+    // MARK: Color Notches
     
-    
-    
-    // MARK: UI Render
-    
-    private func render() {
-        minimumTrackTintColor = primaryColor
-        maximumTrackTintColor = secondaryColor
+    private func colorNotchesByValue(value: Float) {
+        notchViews.filter{ (notchView) -> Bool in
+            Float(notchView.value) < value
+        }.map
+        
     }
     
 }
