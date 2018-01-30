@@ -8,10 +8,14 @@
 
 import Foundation
 
+enum SliderValue {
+    case start
+    case inProgress(value: Float)
+    case end
+}
+
 protocol NotchSliderDelegate : NSObjectProtocol {
-    
-    func valueDidChange(value: Float)
-    
+    func valueDidChange(value: SliderValue)
 }
 
 

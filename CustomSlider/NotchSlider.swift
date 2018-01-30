@@ -24,8 +24,15 @@ class NotchSlider: UISlider {
             self.value = displayedValue
             self.radius = radius
             self.abscisse = abscisse
+            createView()
             super.init(frame: .zero)
-            
+        }
+        
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        private func createView() {
             let point = UIView(frame: CGRect(
                 x: center,
                 y: 0,
@@ -33,10 +40,10 @@ class NotchSlider: UISlider {
                 height: frame.height))
             
             let label = UILabel()
-            label.text = "\(displayedValue)"
-        }
-        required init?(coder aDecoder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
+            label.text = "\(value)"
+            
+            addSubview(point)
+            addSubview(label)
         }
         
     }
@@ -82,7 +89,8 @@ class NotchSlider: UISlider {
     // MARK: Set Value Selector
 
     @objc private func valueDidChanged() {
-        delegate?.valueDidChange(value: self.value)
+        colorNotchesByValue(value: value)
+        // todo switch delegate
     }
     
     
@@ -98,7 +106,7 @@ class NotchSlider: UISlider {
 
     // MARK: Create Notches Views
     
-    private func createNotchViews(){
+    private func createNotchViews() {
         for notchRange in 0...notchesCount-1 {
             let notchView = NotchView(
                 displayedValue: notchRange + Int(minimumValue),
@@ -111,11 +119,11 @@ class NotchSlider: UISlider {
     // MARK: Color Notches
     
     private func colorNotchesByValue(value: Float) {
-        notchViews.filter{ (notchView) -> Bool in
+        notchViews = notchViews.filter{ (notchView) -> Bool in
                 return Float(notchView.value) < value
-            }.map { (notchView) -> NotchView in
+            }.map{ (notchView) -> NotchView in
                 notchView.backgroundColor = primaryColor
                 return notchView
-            }
+        }
     }
 }
