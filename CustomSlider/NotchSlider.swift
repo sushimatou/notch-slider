@@ -10,25 +10,14 @@ import UIKit
 
 class NotchSlider: UISlider {
     
-    // MARK: Notch Definition
-    
-    private struct Notch {
-        var view: NotchView
-        var point: CGPoint
-        init(view: NotchView, point: CGPoint) {
-            self.view = view
-            self.point = point
-        }
-    }
-    
     // MARK: Notch View Definition
     
     private final class NotchView: UIView {
-        private let value: Int
+        private let displayedValue: Int
         private let radius: Float
         private let abscisse: Float
-        init(value: Int, radius: Float, abscisse: Float) {
-            self.value = value
+        init(displayedValue: Int, radius: Float, abscisse: Float) {
+            self.displayedValue = displayedValue
             self.radius = radius
             self.abscisse = abscisse
             super.init(frame: .zero)
@@ -43,15 +32,16 @@ class NotchSlider: UISlider {
 
     private let primaryColor: UIColor
     private let secondaryColor: UIColor
-    private var notches = [Notch]()
     private let notchesCount: Int
     private let notchRadius: Float
+    private var notches = [CGPoint]()
+    private var notchesViews = [NotchView]
     var delegate: NotchSliderDelegate?
 
     
     // MARK: Init Methods
     
-    init(frame: CGRect, minValue: Int, maxValue: Int, notchesCount: Int, notchRadius: Float = 4, primaryColor: UIColor = .gray, secondaryColor: UIColor = .blue) {
+    init(frame: CGRect, minValue: Float, maxValue: Float, notchesCount: Int, notchRadius: Float = 4, primaryColor: UIColor = .gray, secondaryColor: UIColor = .blue) {
         self.notchRadius = notchRadius
         self.primaryColor = primaryColor
         self.secondaryColor = secondaryColor
@@ -75,27 +65,34 @@ class NotchSlider: UISlider {
     
     // MARK: Create Notches
     
-//    private func createNotches() {
-//        for notchRange in 0..<(notchesCount) {
-//            let notch = Notch(
-//                view: ,
-//                point: <#T##CGPoint#>)
-//            notches.append(notch)
-//        }
-//    }
-    
-    // MARK: CreateNotchViews
-    
-    private func createNotchView(notches: [Notch]) -> [NotchView] {
-        for notch in notches {
-            let notchView = NotchView(
-                value:,
-                radius: <#T##Float#>,
-                abcisse: <#T##Float#>)
+    private func createNotchPoints() {
+        for notchRange in 0...notchesCount-1 {
+            let notchPoint = CGPoint(x: CGFloat(notchRange/notchesCount-1) * frame.width,
+                                     y: center.y - CGFloat(notchRadius))
+            notches.append(notchPoint)
         }
     }
     
-    private colorNotch
+    
+    
+    private func createNotchView(notches: [Notch]) -> [NotchView] {
+        for notchRange in 0...notchesCount-1 {
+            let notchView = NotchView(
+                displayedValue: notchRange + Int(minimumValue),
+                radius: notchRadius,
+                abscisse: Float(notchRange/notchesCount-1) * Float(frame.width))
+        }
+    }
+    
+    private func createNotches() {
+        for notchView in notchView {
+            let notch = Notch(
+                value: minimumValue + Float(notchRange),
+                view: )
+        }
+    }
+    
+    
     
     // MARK: UI Render
     
