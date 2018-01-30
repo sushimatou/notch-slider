@@ -27,9 +27,19 @@ class ViewController: UIViewController {
 
 extension ViewController : NotchSliderDelegate {
     
-    func valueDidChange(value: Float) {
-        print(value)
+    func valueDidChange(value: SliderValue) {
+        
+        switch value{
+            
+        case .start:
+            break
+        case .inProgress(_):
+            break
+        case .end:
+            break
+        }
     }
+
     
 }
 
