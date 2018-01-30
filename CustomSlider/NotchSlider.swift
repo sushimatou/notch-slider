@@ -112,9 +112,10 @@ class NotchSlider: UISlider {
     
     private func colorNotchesByValue(value: Float) {
         notchViews.filter{ (notchView) -> Bool in
-            Float(notchView.value) < value
-        }.map
-        
+                return Float(notchView.value) < value
+            }.map { (notchView) -> NotchView in
+                notchView.backgroundColor = primaryColor
+                return notchView
+            }
     }
-    
 }
