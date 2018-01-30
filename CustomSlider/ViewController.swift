@@ -18,11 +18,6 @@ class ViewController: UIViewController {
         self.customSlider.delegate = self
         self.customSlider.center = self.view.center
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 }
 
 extension ViewController : NotchSliderDelegate {

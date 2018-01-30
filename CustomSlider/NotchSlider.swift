@@ -10,44 +10,6 @@ import UIKit
 
 class NotchSlider: UISlider {
     
-    // MARK: Notch View Definition
-    
-    private final class NotchView: UIView {
-        
-        let value: Int
-        private let radius: Float
-        private let abscisse: CGFloat
-        private let valueLabel: UILabel
-        private var point: UIView
-        
-        init(displayedValue: Int, radius: Float, abscisse: CGFloat) {
-            self.value = displayedValue
-            self.radius = radius
-            self.abscisse = abscisse
-            createView()
-            super.init(frame: .zero)
-        }
-        
-        required init?(coder aDecoder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-        
-        private func createView() {
-            let point = UIView(frame: CGRect(
-                x: center,
-                y: 0,
-                width: radius * 2,
-                height: frame.height))
-            
-            let label = UILabel()
-            label.text = "\(value)"
-            
-            addSubview(point)
-            addSubview(label)
-        }
-        
-    }
-    
     // MARK: Properties
 
     private let primaryColor: UIColor
@@ -90,7 +52,8 @@ class NotchSlider: UISlider {
 
     @objc private func valueDidChanged() {
         colorNotchesByValue(value: value)
-        // todo switch delegate
+        delegate?.valueDidChange(value: SliderValue.start)
+        // to do treat start, end in progress cases
     }
     
     
@@ -98,8 +61,10 @@ class NotchSlider: UISlider {
     
     private func createNotchPoints() {
         for notchRange in 0...notchesCount-1 {
-            let notchPoint = CGPoint(x: CGFloat(notchRange/notchesCount-1) * frame.width,
-                                     y: center.y - CGFloat(notchRadius))
+            let notchPoint = CGPoint(
+                x: CGFloat(notchRange/notchesCount-1) * frame.width,
+                y: center.y - CGFloat(notchRadius)
+            )
             notches.append(notchPoint)
         }
     }
@@ -107,13 +72,15 @@ class NotchSlider: UISlider {
     // MARK: Create Notches Views
     
     private func createNotchViews() {
-        for notchRange in 0...notchesCount-1 {
-            let notchView = NotchView(
-                displayedValue: notchRange + Int(minimumValue),
-                radius: notchRadius,
-                abscisse: notches[notchRange].x)
-            addSubview(notchView)
-        }
+        for notch in notches {
+            let notchView = UIView(frame: CGRect(
+                x: notch.x,
+                y: notch.y,
+                width: CGFloat(notchRadius * 2),
+                height: CGFloat(notchRadius * 2)))
+            
+            let notchLabel = UILabel()
+            notchLabel.text = notches
     }
     
     // MARK: Color Notches
