@@ -58,7 +58,6 @@ class NotchSlider: UISlider {
         }
     }
     
-    
     // MARK: UI Rendering
     
     private func render() {
