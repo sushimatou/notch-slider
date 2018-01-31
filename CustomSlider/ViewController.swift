@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    lazy var customSlider = NotchSlider(frame: self.view.frame, minValue: 6, maxValue: 10, notchesCount: 5, primaryColor: .green, secondaryColor: .red)
+    lazy var customSlider = NotchSlider(frame: view.frame, minValue: 6, maxValue: 10, notchesCount: 5, primaryColor: .green, secondaryColor: .red)
 
     override func viewDidLoad() {
         super.viewDidLoad()

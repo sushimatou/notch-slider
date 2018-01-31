@@ -10,14 +10,38 @@ import UIKit
 
 class NotchSlider: UISlider {
     
+    private final class NotchView: UIView {
+        
+        let value: Int
+        let radius: Float
+        
+        init(value: Int, point: CGPoint, radius: Float) {
+            self.value = value
+            self.radius = radius
+            super.init(frame: CGRect(
+                x: point.x - CGFloat(radius),
+                y: point.y,
+                width: CGFloat(radius * 2),
+                height: CGFloat(radius * 2)))
+            layer.cornerRadius = CGFloat(radius)
+            clipsToBounds = true
+        }
+        
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+    }
+    
     // MARK: Properties
-
+    
     private let primaryColor: UIColor
     private let secondaryColor: UIColor
     private let notchesCount: Int
     private let notchRadius: Float
     private var notches = [CGPoint]()
     private var notchViews = [NotchView]()
+    private lazy var customFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width - 20, height: frame.height)
     var delegate: NotchSliderDelegate?
 
     // MARK: Init Methods
@@ -27,7 +51,7 @@ class NotchSlider: UISlider {
         self.primaryColor = primaryColor
         self.secondaryColor = secondaryColor
         self.notchesCount = notchesCount
-        super.init(frame: frame)
+        super.init(frame: self.redrawFrame(frame: frame))
         self.minimumValue = Float(minValue)
         self.maximumValue = Float(maxValue)
         minimumTrackTintColor = primaryColor
@@ -40,9 +64,15 @@ class NotchSlider: UISlider {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func redrawFrame(frame: CGRect) -> CGRect {
+        let newFrame = CGRect(x: frame.origin.x + CGFloat(notchRadius), y: frame.origin.y, width: frame.width - CGFloat(notchRadius * 8), height: frame.height)
+        return newFrame
+    }
+    
     // MARK: Set Value Selector
 
     @objc private func valueDidChanged() {
+        print(value)
         colorNotchViews(value: value)
         delegate?.valueDidChange(sliderValue: getSliderValue(value: value))
     }
@@ -54,42 +84,51 @@ class NotchSlider: UISlider {
         case maximumValue:
             return .end
         default:
-            return .inProgress(value: value)
+            return .inProgress(value: Double(value))
         }
     }
     
     // MARK: UI Rendering
     
     private func render() {
-        createNotchPoints()
-        createNotchViews()
+        for notchRange in 0...notchesCount-1 {
+            createNotchPoint(notchRange: notchRange)
+            createNotchView(notchRange: notchRange)
+            createValueLabel(notchRange: notchRange)
+        }
         colorNotchViews(value: value)
     }
     
-    private func createNotchPoints() {
-        for notchRange in 0...notchesCount-1 {
-            let notchPoint = CGPoint(
-                x: CGFloat(notchRange/notchesCount-1) * frame.width,
-                y: center.y - CGFloat(notchRadius)
-            )
-            notches.append(notchPoint)
-        }
+    private func createNotchPoint(notchRange: Int) {
+        let notchPoint = CGPoint(
+            x: CGFloat(notchRange)/CGFloat(notchesCount-1) * frame.width,
+            y: center.y - CGFloat(notchRadius)
+        )
+        notches.append(notchPoint)
     }
     
-    private func createNotchViews() {
-        for notchRange in 0...notchesCount-1 {
-            let notchView = NotchView(value: Int(minimumValue) + notchRange ,
-                                      point: notches[notchRange],
-                                      radius: notchRadius)
-            notchViews.append(notchView)
-            addSubview(notchView)
-            
-        }
+    private func createNotchView(notchRange: Int) {
+        let notchView = NotchView(
+            value: Int(minimumValue) + notchRange ,
+            point: notches[notchRange],
+            radius: notchRadius)
+        notchViews.append(notchView)
+        addSubview(notchView)
+    }
+    
+    private func createValueLabel(notchRange: Int) {
+        let valueLabel = UILabel()
+        valueLabel.text = "\(notchViews[notchRange].value)"
+        valueLabel.textAlignment = .center
+        valueLabel.sizeToFit()
+        valueLabel.center.y = notchViews[notchRange].frame.midY + 20
+        valueLabel.center.x = notchViews[notchRange].frame.midX
+        addSubview(valueLabel)
     }
     
     private func colorNotchViews(value: Float) {
         notchViews = notchViews.flatMap({ (notchView) -> NotchView in
-            notchView.backgroundColor = Float(notchView.value) < value ? primaryColor : secondaryColor
+            notchView.backgroundColor = Float(notchView.value) <= value ? primaryColor : secondaryColor
             return notchView
         })
     }

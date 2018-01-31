@@ -10,7 +10,7 @@ import Foundation
 
 enum SliderValue {
     case start
-    case inProgress(value: Float)
+    case inProgress(value: Double)
     case end
 }
 
