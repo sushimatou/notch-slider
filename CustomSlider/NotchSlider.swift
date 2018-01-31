@@ -20,7 +20,6 @@ class NotchSlider: UISlider {
     private var notchViews = [NotchView]()
     var delegate: NotchSliderDelegate?
 
-    
     // MARK: Init Methods
     
     init(frame: CGRect, minValue: Float, maxValue: Float, notchesCount: Int, notchRadius: Float = 4, primaryColor: UIColor = .gray, secondaryColor: UIColor = .blue) {
@@ -72,15 +71,14 @@ class NotchSlider: UISlider {
     // MARK: Create Notches Views
     
     private func createNotchViews() {
-        for notch in notches {
-            let notchView = UIView(frame: CGRect(
-                x: notch.x,
-                y: notch.y,
-                width: CGFloat(notchRadius * 2),
-                height: CGFloat(notchRadius * 2)))
+        for notchRange in 0...notchesCount-1 {
+            let notchView = NotchView(value: Int(minimumValue) + notchRange ,
+                                      point: notches[notchRange],
+                                      radius: notchRadius)
+            addSubview(notchView)
+            notchViews.append(notchView)
             
-            let notchLabel = UILabel()
-            notchLabel.text = notches
+        }
     }
     
     // MARK: Color Notches
