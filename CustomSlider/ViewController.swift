@@ -22,10 +22,8 @@ class ViewController: UIViewController {
 
 extension ViewController : NotchSliderDelegate {
     
-    func valueDidChange(value: SliderValue) {
-        
-        switch value{
-            
+    func valueDidChange(sliderValue: SliderValue) {
+        switch sliderValue {
         case .start:
             break
         case .inProgress(_):
