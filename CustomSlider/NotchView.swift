@@ -10,19 +10,16 @@ import UIKit
 
 class NotchView: UIView {
     private let value: Int
-    private let pointView: UIView
-    private var valueLabel: UILabel
+    //private var pointView: UIView
+//    private var valueLabel: UILabel
     
     init(value: Int, point: CGPoint, radius: Float) {
         self.value = value
-        self.pointView = UIView(frame: CGRect(
-            x: self.frame.midX,
-            y: 0,
-            width: CGFloat(radius),
-            height: CGFloat(radius)))
-        self.valueLabel.text = "\(value)"
-        addSubview(valueLabel)
-        addSubview(pointView)
+        
+        super.init(frame: .zero)
+//        self.valueLabel.text = "\(value)"
+//        addSubview(valueLabel)
+//        addSubview(pointView)
     }
     
     required init?(coder aDecoder: NSCoder) {

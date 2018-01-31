@@ -15,7 +15,7 @@ enum SliderValue {
 }
 
 protocol NotchSliderDelegate : NSObjectProtocol {
-    func valueDidChange(value: SliderValue)
+    func valueDidChange(sliderValue: SliderValue)
 }
 
 

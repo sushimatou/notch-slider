@@ -51,8 +51,8 @@ class NotchSlider: UISlider {
 
     @objc private func valueDidChanged() {
         colorNotchesByValue(value: value)
-        delegate?.valueDidChange(value: SliderValue.start)
-        // to do treat start, end in progress cases
+        delegate?.valueDidChange(sliderValue: getSliderValue(value: value))
+        
     }
     
     
@@ -89,6 +89,17 @@ class NotchSlider: UISlider {
             }.map{ (notchView) -> NotchView in
                 notchView.backgroundColor = primaryColor
                 return notchView
+        }
+    }
+    
+    private func getSliderValue(value: Float) -> SliderValue {
+        switch value {
+        case minimumValue:
+            return SliderValue.start
+        case maximumValue:
+            return SliderValue.end
+        default:
+            return SliderValue.inProgress(value: value)
         }
     }
 }
