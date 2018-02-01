@@ -64,6 +64,12 @@ class NotchSlider: UISlider {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func trackRect(forBounds bounds: CGRect) -> CGRect {
+        let customBounds = CGRect(x: bounds.origin.x, y: bounds.midY-1, width: bounds.width, height: 1)
+        super.trackRect(forBounds: customBounds)
+        return customBounds
+    }
+    
     private func redrawFrame(frame: CGRect) -> CGRect {
         let newFrame = CGRect(x: frame.origin.x + CGFloat(notchRadius), y: frame.origin.y, width: frame.width - CGFloat(notchRadius * 8), height: frame.height)
         return newFrame
@@ -72,7 +78,6 @@ class NotchSlider: UISlider {
     // MARK: Set Value Selector
 
     @objc private func valueDidChanged() {
-        print(value)
         colorNotchViews(value: value)
         delegate?.valueDidChange(sliderValue: getSliderValue(value: value))
     }
@@ -120,8 +125,9 @@ class NotchSlider: UISlider {
         let valueLabel = UILabel()
         valueLabel.text = "\(notchViews[notchRange].value)"
         valueLabel.textAlignment = .center
+        valueLabel.textColor = .darkGray
         valueLabel.sizeToFit()
-        valueLabel.center.y = notchViews[notchRange].frame.midY + 20
+        valueLabel.center.y = notchViews[notchRange].frame.midY + 30
         valueLabel.center.x = notchViews[notchRange].frame.midX
         addSubview(valueLabel)
     }
