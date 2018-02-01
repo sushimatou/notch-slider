@@ -9,9 +9,13 @@
 import UIKit
 
 class FilterTableViewController: UITableViewController {
+    
+    // MARK: - Properties
 
     private let averageGradeCellReuseId = "averageGradeCellReuseId"
     private let headerViewReuseId = "headerViewReuseId"
+    
+    // MARK: - LifeCycle 
     
     override func loadView() {
         tableView = UITableView(frame: .zero, style: UITableViewStyle.grouped)

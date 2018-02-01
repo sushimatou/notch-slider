@@ -53,11 +53,3 @@ class AverageGradeTableViewCell: UITableViewCell {
     }
     
 }
-
-extension AverageGradeTableViewCell: NotchSliderDelegate {
-    func valueDidChange(sliderValue: SliderValue) {
-        
-    }
-    
-    
-}

@@ -41,7 +41,6 @@ class NotchSlider: UISlider {
     private let notchRadius: Float
     private var notches = [CGPoint]()
     private var notchViews = [NotchView]()
-    private lazy var customFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width - 20, height: frame.height)
     var delegate: NotchSliderDelegate?
     
     override var intrinsicContentSize: CGSize {
