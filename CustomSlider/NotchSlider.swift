@@ -43,7 +43,12 @@ class NotchSlider: UISlider {
     private var notchViews = [NotchView]()
     private lazy var customFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width - 20, height: frame.height)
     var delegate: NotchSliderDelegate?
-
+    
+    override var intrinsicContentSize: CGSize {
+        let size = super.intrinsicContentSize
+        return CGSize(width: size.width, height: 50)
+    }
+    
     // MARK: Init Methods
     
     init(frame: CGRect, minValue: Float, maxValue: Float, notchesCount: Int, notchRadius: Float = 4, primaryColor: UIColor = .gray, secondaryColor: UIColor = .blue) {
@@ -51,7 +56,7 @@ class NotchSlider: UISlider {
         self.primaryColor = primaryColor
         self.secondaryColor = secondaryColor
         self.notchesCount = notchesCount
-        super.init(frame: self.redrawFrame(frame: frame))
+        super.init(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: 50))
         self.minimumValue = Float(minValue)
         self.maximumValue = Float(maxValue)
         minimumTrackTintColor = primaryColor
@@ -68,11 +73,6 @@ class NotchSlider: UISlider {
         let customBounds = CGRect(x: bounds.origin.x, y: bounds.midY-1, width: bounds.width, height: 1)
         super.trackRect(forBounds: customBounds)
         return customBounds
-    }
-    
-    private func redrawFrame(frame: CGRect) -> CGRect {
-        let newFrame = CGRect(x: frame.origin.x + CGFloat(notchRadius), y: frame.origin.y, width: frame.width - CGFloat(notchRadius * 8), height: frame.height)
-        return newFrame
     }
     
     // MARK: Set Value Selector

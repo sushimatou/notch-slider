@@ -13,6 +13,7 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     // MARK: Properties
     
     private var valueLabel = UILabel()
+    private let valueContainerView = UIView()
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -31,5 +32,12 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     
     private func render() {
         textLabel?.text? = (textLabel?.text?.uppercased())!
+        
+    }
+    
+    private func valueContainerViewStyle() {
+        let margins = valueContainerView.layoutMarginsGuide
+        contentView.addSubview(valueContainerView)
+        valueContainerView.leftAnchor.constraint(equalTo: margins.leftAnchor, constant: 20).isActive = true
     }
 }

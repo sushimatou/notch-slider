@@ -34,9 +34,19 @@ class FilterTableViewController: UITableViewController {
         return 1
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.section {
+        case 0:
+            return 80
+        default:
+            return 0
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: averageGradeCellReuseId) as! AverageGradeTableViewCell
         cell.notchSlider = NotchSlider(frame: cell.frame, minValue: 7, maxValue: 10, notchesCount: 4, notchRadius: 4, primaryColor: .blue, secondaryColor: .red)
+        cell.notchSlider.delegate = self
         return cell
     }
     
@@ -58,6 +68,7 @@ class FilterTableViewController: UITableViewController {
 extension FilterTableViewController: NotchSliderDelegate {
     
     func valueDidChange(sliderValue: SliderValue) {
+        print(sliderValue)
         let sliderValue = sliderValue
         let sectionHeaderView = tableView.headerView(forSection: 1) as! SectionHeaderView
         sectionHeaderView.setValue(value: String(describing:sliderValue))
