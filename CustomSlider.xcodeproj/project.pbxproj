@@ -11,6 +11,7 @@
 		6B5016B82022363700201417 /* FilterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5016B72022363700201417 /* FilterTableViewController.swift */; };
 		6BA14C802023557C008354A6 /* AverageGradeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA14C7F2023557C008354A6 /* AverageGradeTableViewCell.swift */; };
 		6BA14C8420235730008354A6 /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA14C8320235730008354A6 /* SectionHeaderView.swift */; };
+		6BACB7752024A2F9000E23D2 /* NotchSliderDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BACB7742024A2F9000E23D2 /* NotchSliderDataSource.swift */; };
 		6BF7541720177D3700A70FFE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BF7541620177D3700A70FFE /* AppDelegate.swift */; };
 		6BF7541E20177D3700A70FFE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6BF7541D20177D3700A70FFE /* Assets.xcassets */; };
 		6BF7542120177D3700A70FFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6BF7541F20177D3700A70FFE /* LaunchScreen.storyboard */; };
@@ -41,6 +42,7 @@
 		6B5016B72022363700201417 /* FilterTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTableViewController.swift; sourceTree = "<group>"; };
 		6BA14C7F2023557C008354A6 /* AverageGradeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AverageGradeTableViewCell.swift; sourceTree = "<group>"; };
 		6BA14C8320235730008354A6 /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
+		6BACB7742024A2F9000E23D2 /* NotchSliderDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchSliderDataSource.swift; sourceTree = "<group>"; };
 		6BF7541320177D3700A70FFE /* CustomSlider.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomSlider.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BF7541620177D3700A70FFE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6BF7541D20177D3700A70FFE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -80,6 +82,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6B98DD232024A93200938D77 /* NotchSlider */ = {
+			isa = PBXGroup;
+			children = (
+				6BF7544420177D8100A70FFE /* NotchSlider.swift */,
+				6BACB7742024A2F9000E23D2 /* NotchSliderDataSource.swift */,
+				6B261C432017954F0055205B /* NotchSliderDelegate.swift */,
+			);
+			path = NotchSlider;
+			sourceTree = "<group>";
+		};
 		6BA14C8120235674008354A6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -119,6 +131,7 @@
 		6BF7541520177D3700A70FFE /* CustomSlider */ = {
 			isa = PBXGroup;
 			children = (
+				6B98DD232024A93200938D77 /* NotchSlider */,
 				6BA14C822023567F008354A6 /* Cells */,
 				6BA14C8120235674008354A6 /* Views */,
 				6BF7541620177D3700A70FFE /* AppDelegate.swift */,
@@ -126,8 +139,6 @@
 				6BF7541F20177D3700A70FFE /* LaunchScreen.storyboard */,
 				6B5016B72022363700201417 /* FilterTableViewController.swift */,
 				6BF7542220177D3700A70FFE /* Info.plist */,
-				6BF7544420177D8100A70FFE /* NotchSlider.swift */,
-				6B261C432017954F0055205B /* NotchSliderDelegate.swift */,
 			);
 			path = CustomSlider;
 			sourceTree = "<group>";
@@ -283,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BACB7752024A2F9000E23D2 /* NotchSliderDataSource.swift in Sources */,
 				6BF7541720177D3700A70FFE /* AppDelegate.swift in Sources */,
 				6BA14C8420235730008354A6 /* SectionHeaderView.swift in Sources */,
 				6B261C442017954F0055205B /* NotchSliderDelegate.swift in Sources */,

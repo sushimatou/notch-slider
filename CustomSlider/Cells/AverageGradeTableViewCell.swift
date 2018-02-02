@@ -15,10 +15,6 @@ class AverageGradeTableViewCell: UITableViewCell {
     private let primColor = UIColor(red:0.94, green:0.94, blue:0.94, alpha:1)
     private let secColor = UIColor(red:0.4, green:0.68, blue:0.31, alpha:1)
     
-    // -
-    
-    lazy var notchSlider: NotchSlider = NotchSlider(frame: bounds, minValue: 7, maxValue: 10, notchesCount: 4, notchRadius: 4, primaryColor: primColor, secondaryColor: secColor)
-    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         layout()
@@ -29,27 +25,26 @@ class AverageGradeTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: UI Rendering
+    
     private func layout() {
         addSubview(notchSlider)
         notchSliderContraints(notchSlider)
     }
     
     private func render() {
-
+        notchSliderStyle(notchSlider)
     }
     
-    // MARK: Styles
-    
-    // todo
-    
-    // MARK: Layout Constraints
+    private func notchSliderStyle(_ notchSlider: NotchSlider) {
+        notchSlider.minimumTrackTintColor = primColor
+        notchSlider.maximumTrackTintColor = secColor
+    }
     
     private func notchSliderContraints(_ notchSlider: NotchSlider) {
         notchSlider.translatesAutoresizingMaskIntoConstraints = false
-        notchSlider.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20).isActive = true
-        notchSlider.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20).isActive = true
-        notchSlider.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
         notchSlider.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        notchSlider.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
     }
     
 }

@@ -24,8 +24,7 @@ class FilterTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.allowsSelection = false
-        tableView.register(AverageGradeTableViewCell.self, forCellReuseIdentifier: averageGradeCellReuseId)
-        tableView.register(SectionHeaderView.self, forHeaderFooterViewReuseIdentifier: headerViewReuseId)
+        registerClasses()
     }
     
     // MARK: - Table view data source
@@ -49,8 +48,7 @@ class FilterTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: averageGradeCellReuseId) as! AverageGradeTableViewCell
-        cell.notchSlider = NotchSlider(frame: cell.frame, minValue: 7, maxValue: 10, notchesCount: 4, notchRadius: 4, primaryColor: .blue, secondaryColor: .red)
-        cell.notchSlider.delegate = self
+        let notchSliderStyle = NotchSliderStyle()
         return cell
     }
     
@@ -65,6 +63,11 @@ class FilterTableViewController: UITableViewController {
         }
     }
     
+    private func registerClasses() {
+        tableView.register(AverageGradeTableViewCell.self, forCellReuseIdentifier: averageGradeCellReuseId)
+        tableView.register(SectionHeaderView.self, forHeaderFooterViewReuseIdentifier: headerViewReuseId)
+    }
+    
 }
 
 // MARK: - Notch Slider Delegate
@@ -77,5 +80,14 @@ extension FilterTableViewController: NotchSliderDelegate {
         let sectionHeaderView = tableView.headerView(forSection: 1) as! SectionHeaderView
         sectionHeaderView.setValue(value: String(describing:sliderValue))
     }
+    
+}
+
+extension FilterTableViewController: NotchSliderDataSource {
+    
+    func setNotchCountforSlider(_: UIViewController) -> Int {
+        return 4
+    }
+    
     
 }

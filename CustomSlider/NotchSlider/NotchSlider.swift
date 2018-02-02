@@ -10,6 +10,8 @@ import UIKit
 
 class NotchSlider: UISlider {
     
+    // MARK: NotchView
+    
     private final class NotchView: UIView {
         
         let value: Int
@@ -34,34 +36,42 @@ class NotchSlider: UISlider {
     }
     
     // MARK: Properties
-    
-    private let primaryColor: UIColor
-    private let secondaryColor: UIColor
-    private let notchesCount: Int
+
     private let notchRadius: Float
+    private var notchesCount: Int
     private var notches = [CGPoint]()
     private var notchViews = [NotchView]()
-    var delegate: NotchSliderDelegate?
+    var dataSource: NotchSliderDataSource?
+    weak var delegate: NotchSliderDelegate?
     
     override var intrinsicContentSize: CGSize {
         let size = super.intrinsicContentSize
         return CGSize(width: size.width, height: 50)
     }
     
+    struct NotchSliderStyle {
+        
+        static let defaultStyle = NotchSliderStyle(
+            primaryColor: UIColor.gray,
+            secondaryColor: UIColor.blue,
+            minimumValue: 7,
+            maximumValue: 10,
+            width: 50)
+        let primaryColor: UIColor
+        let secondaryColor: UIColor
+        let minimumValue: Int
+        let maximumValue: Int
+        let width: CGFloat
+        
+    }
+    
     // MARK: Init Methods
     
-    init(frame: CGRect, minValue: Float, maxValue: Float, notchesCount: Int, notchRadius: Float = 4, primaryColor: UIColor = .gray, secondaryColor: UIColor = .blue) {
-        self.notchRadius = notchRadius
-        self.primaryColor = primaryColor
-        self.secondaryColor = secondaryColor
-        self.notchesCount = notchesCount
-        super.init(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: 50))
-        self.minimumValue = Float(minValue)
-        self.maximumValue = Float(maxValue)
-        minimumTrackTintColor = primaryColor
-        maximumTrackTintColor = secondaryColor
-        self.addTarget(self, action: #selector(valueDidChanged), for: .valueChanged)
-        self.render()
+    init(style: NotchSliderStyle = .defaultStyle) {
+        self.minimumValue = Float(style.minimumValue)
+        self.maximumValue = Float(style.maximumValue)
+        self.minimumTrackTintColor = style.primaryColor
+        self.maximumTrackTintColor = style.secondaryColor
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -78,10 +88,12 @@ class NotchSlider: UISlider {
 
     @objc private func valueDidChanged() {
         colorNotchViews(value: value)
-        delegate?.valueDidChange(sliderValue: getSliderValue(value: value))
+        delegate?.valueDidChange(sliderValue: sliderValue())
     }
     
-    private func getSliderValue(value: Float) -> SliderValue {
+    // computed var
+    
+    private func sliderValue() -> SliderValue {
         switch value{
         case minimumValue:
             return .start
@@ -95,7 +107,7 @@ class NotchSlider: UISlider {
     // MARK: UI Rendering
     
     private func render() {
-        for notchRange in 0...notchesCount-1 {
+        for notchRange in 0..<notchesCount {
             createNotchPoint(notchRange: notchRange)
             createNotchView(notchRange: notchRange)
             createValueLabel(notchRange: notchRange)
@@ -113,7 +125,7 @@ class NotchSlider: UISlider {
     
     private func createNotchView(notchRange: Int) {
         let notchView = NotchView(
-            value: Int(minimumValue) + notchRange ,
+            value: Int(minimumValue) + notchRange,
             point: notches[notchRange],
             radius: notchRadius)
         notchViews.append(notchView)
@@ -132,10 +144,10 @@ class NotchSlider: UISlider {
     }
     
     private func colorNotchViews(value: Float) {
-        notchViews = notchViews.flatMap({ (notchView) -> NotchView in
-            notchView.backgroundColor = Float(notchView.value) <= value ? primaryColor : secondaryColor
+        notchViews = notchViews.flatMap { (notchView) -> NotchView in
+            notchView.backgroundColor = Float(notchView.value) <= value ? minimumTrackTintColor : maximumTrackTintColor
             return notchView
-        })
+        }
     }
     
 }
