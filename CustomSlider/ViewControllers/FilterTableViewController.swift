@@ -67,21 +67,21 @@ class FilterTableViewController: UITableViewController {
         switch section {
         case 0:
             let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerViewReuseId) as! SectionHeaderView
-            headerView.textLabel?.text = "Note Moyenne".uppercased()
+            headerView.setTitle(text: "Note Moyenne".uppercased())
+            
             return headerView
         default:
             return nil // noop
         }
     }
     
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 20
+    }
+    
     private func registerClasses() {
         tableView.register(AverageGradeTableViewCell.self, forCellReuseIdentifier: averageGradeCellReuseId)
         tableView.register(SectionHeaderView.self, forHeaderFooterViewReuseIdentifier: headerViewReuseId)
-    }
-    
-    private func changeDynamicText(for headerView: UITableViewHeaderFooterView, text: String) {
-        headerView.detailTextLabel?.text = text
-        headerView.detailTextLabel?.sizeToFit()
     }
     
 }
@@ -91,8 +91,8 @@ class FilterTableViewController: UITableViewController {
 extension FilterTableViewController: NotchSliderDelegate {
     
     func valueDidChange(sliderValue: SliderValue) {
-        let header = tableView.headerView(forSection: 0)
-        changeDynamicText(for: header!, text: "\(sliderValue)")
+        let header = tableView.headerView(forSection: 0) as! SectionHeaderView
+        header.setDynamicText(text: "\(sliderValue)")
     }
     
 }
