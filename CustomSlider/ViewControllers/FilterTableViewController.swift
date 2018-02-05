@@ -89,10 +89,17 @@ class FilterTableViewController: UITableViewController {
 // MARK: - Notch slider delegate
 
 extension FilterTableViewController: NotchSliderDelegate {
-    
+
     func valueDidChange(sliderValue: SliderValue) {
         let header = tableView.headerView(forSection: 0) as! SectionHeaderView
-        header.setDynamicText(text: "\(sliderValue)")
+        switch sliderValue {
+        case .start:
+            header.setDynamicText(text: "toutes")
+        case .inProgress(let value):
+            header.setDynamicText(text: "\(value)"+"+")
+        case .end:
+            break
+        }
     }
     
 }

@@ -12,12 +12,12 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     
     // MARK: Properties
     
-    private let dynamicLabelContainerView = UIView()
     private let sectionTitleLabel = UILabel()
     private let dynamicLabel = UILabel()
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
+        dynamicLabel.text = "toutes"
         render()
         layout()
     }
@@ -26,7 +26,7 @@ class SectionHeaderView: UITableViewHeaderFooterView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // Public fcs
+    // Public funcs
     
     func setTitle(text: String) {
         sectionTitleLabel.text = text
@@ -43,16 +43,13 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     private func layout() {
         addSubview(sectionTitleLabel)
         addSubview(dynamicLabel)
-        addSubview(dynamicLabelContainerView)
         sectionTitleLabelConstraints(sectionTitleLabel)
         dynamicLabelConstraints(dynamicLabel)
-        dynamicLabelContainerViewConstraints(dynamicLabelContainerView)
     }
     
     private func render() {
         sectionTitleLabelStyle(sectionTitleLabel)
         dynamicLabelStyle(dynamicLabel)
-        dynamicLabelContainerViewStyle(dynamicLabelContainerView)
     }
 
     // Styles
@@ -62,14 +59,15 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     }
     
     private func dynamicLabelStyle(_ dynamicLabel: UILabel) {
-        
+        let insets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
+        let rect = UIEdgeInsetsInsetRect(dynamicLabel.frame, insets)
+        dynamicLabel.textColor = .white
+        dynamicLabel.drawText(in: rect)
+        dynamicLabel.backgroundColor = .darkGray
+        dynamicLabel.layer.cornerRadius = 10
+        dynamicLabel.clipsToBounds = true
     }
     
-    private func dynamicLabelContainerViewStyle(_ dynamicLabelContainerView: UIView) {
-        dynamicLabelContainerView.backgroundColor = .darkGray
-        dynamicLabelContainerView.layer.cornerRadius = 20
-        dynamicLabelContainerView.clipsToBounds = true
-    }
     
     // Constraints
     
@@ -84,10 +82,6 @@ class SectionHeaderView: UITableViewHeaderFooterView {
         dynamicLabel.translatesAutoresizingMaskIntoConstraints = false
         dynamicLabel.leadingAnchor.constraint(equalTo: sectionTitleLabel.trailingAnchor, constant: 20).isActive = true
         dynamicLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-    }
-    
-    private func dynamicLabelContainerViewConstraints(_ dynamicLabelContainerView: UIView) {
-        
     }
     
 }
