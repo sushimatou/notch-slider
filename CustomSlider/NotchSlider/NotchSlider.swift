@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NotchSlider: UISlider {
+class NotchSlider: UIView {
     
     // MARK: NotchView
     
@@ -28,107 +28,120 @@ class NotchSlider: UISlider {
             layer.cornerRadius = CGFloat(radius)
             clipsToBounds = true
         }
-        
+    
         required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
         
     }
     
+    // MARK: NotchSlider Style
+    
+    struct NotchSliderStyle {
+        static let defaultStyle = NotchSliderStyle(
+            primaryColor: UIColor.gray,
+            secondaryColor: UIColor.blue,
+            minimumValue: 7,
+            maximumValue: 10,
+            notchRadius: 2,
+            notchesCount: 4,
+            width: 50)
+        let primaryColor: UIColor
+        let secondaryColor: UIColor
+        let minimumValue: Float
+        let maximumValue: Float
+        let notchRadius: Float
+        let notchesCount: Int
+        let width: CGFloat
+    }
+    
     // MARK: Properties
 
-    private let notchRadius: Float
-    private var notchesCount: Int
+    private let style: NotchSliderStyle
+    private let slider = UISlider()
     private var notches = [CGPoint]()
     private var notchViews = [NotchView]()
-    var dataSource: NotchSliderDataSource?
     weak var delegate: NotchSliderDelegate?
+    
+    // MARL: Computed Properties
     
     override var intrinsicContentSize: CGSize {
         let size = super.intrinsicContentSize
         return CGSize(width: size.width, height: 50)
     }
     
-    struct NotchSliderStyle {
-        
-        static let defaultStyle = NotchSliderStyle(
-            primaryColor: UIColor.gray,
-            secondaryColor: UIColor.blue,
-            minimumValue: 7,
-            maximumValue: 10,
-            width: 50)
-        let primaryColor: UIColor
-        let secondaryColor: UIColor
-        let minimumValue: Int
-        let maximumValue: Int
-        let width: CGFloat
-        
+    
+    var sliderValue: SliderValue {
+        switch slider.value {
+        case style.minimumValue:
+            return .start
+        case style.maximumValue:
+            return .end
+        default:
+            return SliderValue.inProgress(value: Double(slider.value))
+        }
     }
     
     // MARK: Init Methods
     
     init(style: NotchSliderStyle = .defaultStyle) {
-        self.minimumValue = Float(style.minimumValue)
-        self.maximumValue = Float(style.maximumValue)
-        self.minimumTrackTintColor = style.primaryColor
-        self.maximumTrackTintColor = style.secondaryColor
+        self.style = style
+        let frame = CGRect(x: 0, y: 0, width: style.width, height: 50)
+        super.init(frame: frame)
+        render()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func trackRect(forBounds bounds: CGRect) -> CGRect {
-        let customBounds = CGRect(x: bounds.origin.x, y: bounds.midY-1, width: bounds.width, height: 1)
-        super.trackRect(forBounds: customBounds)
-        return customBounds
-    }
-    
     // MARK: Set Value Selector
 
     @objc private func valueDidChanged() {
-        colorNotchViews(value: value)
-        delegate?.valueDidChange(sliderValue: sliderValue())
-    }
-    
-    // computed var
-    
-    private func sliderValue() -> SliderValue {
-        switch value{
-        case minimumValue:
-            return .start
-        case maximumValue:
-            return .end
-        default:
-            return .inProgress(value: Double(value))
-        }
+        colorNotchView(by: slider.value)
+        delegate?.valueDidChange(sliderValue: sliderValue)
     }
     
     // MARK: UI Rendering
     
     private func render() {
-        for notchRange in 0..<notchesCount {
+        createSlider()
+        for notchRange in 0..<style.notchesCount {
             createNotchPoint(notchRange: notchRange)
             createNotchView(notchRange: notchRange)
             createValueLabel(notchRange: notchRange)
         }
-        colorNotchViews(value: value)
+        colorNotchView(by: slider.value)
+        bringSubview(toFront: slider)
+    }
+    
+    private func createSlider() {
+        slider.addTarget(self, action: #selector(valueDidChanged), for: UIControlEvents.valueChanged)
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.minimumValue = style.minimumValue
+        slider.maximumValue = style.maximumValue
+        slider.minimumTrackTintColor = style.primaryColor
+        slider.maximumTrackTintColor = style.secondaryColor
+        addSubview(slider)
+        slider.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
+        slider.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
+        slider.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
     }
     
     private func createNotchPoint(notchRange: Int) {
         let notchPoint = CGPoint(
-            x: CGFloat(notchRange)/CGFloat(notchesCount-1) * frame.width,
-            y: center.y - CGFloat(notchRadius)
+            x: CGFloat(notchRange)/CGFloat(style.notchesCount-1) * frame.width,
+            y: slider.center.y - CGFloat(style.notchRadius)
         )
-        notches.append(notchPoint)
+        notches.insert(notchPoint, at: notchRange)
     }
     
     private func createNotchView(notchRange: Int) {
         let notchView = NotchView(
-            value: Int(minimumValue) + notchRange,
+            value: Int(style.minimumValue) + notchRange,
             point: notches[notchRange],
-            radius: notchRadius)
-        notchViews.append(notchView)
+            radius: style.notchRadius)
+        notchViews.insert(notchView, at: notchRange)
         addSubview(notchView)
     }
     
@@ -143,11 +156,10 @@ class NotchSlider: UISlider {
         addSubview(valueLabel)
     }
     
-    private func colorNotchViews(value: Float) {
+    private func colorNotchView(by value: Float) {
         notchViews = notchViews.flatMap { (notchView) -> NotchView in
-            notchView.backgroundColor = Float(notchView.value) <= value ? minimumTrackTintColor : maximumTrackTintColor
+            notchView.backgroundColor = Float(notchView.value) <= value ? slider.minimumTrackTintColor : slider.maximumTrackTintColor
             return notchView
         }
     }
-    
 }

@@ -48,7 +48,17 @@ class FilterTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: averageGradeCellReuseId) as! AverageGradeTableViewCell
-        let notchSliderStyle = NotchSliderStyle()
+        let notchSliderStyle = NotchSlider.NotchSliderStyle(
+            primaryColor: UIColor(red:0.4, green:0.68, blue:0.31, alpha:1),
+            secondaryColor: UIColor(red:0.94, green:0.94, blue:0.94, alpha:1),
+            minimumValue: 7,
+            maximumValue: 10,
+            notchRadius: 4,
+            notchesCount: 4,
+            width: cell.contentView.frame.width)
+        let notchSlider = NotchSlider(style: notchSliderStyle)
+        notchSlider.delegate = self
+        cell.notchSlider = notchSlider
         return cell
     }
     
@@ -70,24 +80,14 @@ class FilterTableViewController: UITableViewController {
     
 }
 
-// MARK: - Notch Slider Delegate
+// MARK: - Notch slider delegate
 
 extension FilterTableViewController: NotchSliderDelegate {
     
     func valueDidChange(sliderValue: SliderValue) {
-        print(sliderValue)
         let sliderValue = sliderValue
         let sectionHeaderView = tableView.headerView(forSection: 1) as! SectionHeaderView
         sectionHeaderView.setValue(value: String(describing:sliderValue))
     }
-    
-}
-
-extension FilterTableViewController: NotchSliderDataSource {
-    
-    func setNotchCountforSlider(_: UIViewController) -> Int {
-        return 4
-    }
-    
     
 }
