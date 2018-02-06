@@ -16,7 +16,7 @@ class NotchSlider: UIView {
         
         let value: Int
         let radius: CGFloat
-        
+
         override var intrinsicContentSize: CGSize {
             return CGSize(width: radius * 2, height: radius * 2)
         }
@@ -63,8 +63,9 @@ class NotchSlider: UIView {
 
     private let style: NotchSliderStyle
     private let slider = UISlider()
-    private var customViews = [NotchView]()
+    private var notchViews = [NotchView]()
     private var notchesStackView = UIStackView()
+    private var labelsStackView = UIStackView()
     weak var delegate: NotchSliderDelegate?
     
     // MARL: Computed Properties
@@ -117,14 +118,14 @@ class NotchSlider: UIView {
     // MARK: UI Rendering
     
     private func layout() {
-        sliderConstraints(s: slider)
-        notchesStackViewConstraints(n: notchesStackView)
+        sliderConstraints(slider)
+        notchesStackViewConstraints(notchesStackView)
         bringSubview(toFront: slider)
     }
     
     private func render() {
-        sliderStyle(s: slider)
-        notchesStackViewStyle(n: notchesStackView)
+        sliderStyle(slider)
+        notchesStackViewStyle(notchesStackView)
     }
     
     // MARK: Slider Creation
@@ -132,31 +133,30 @@ class NotchSlider: UIView {
     private func createNotches() {
         for range in 0..<style.notchesCount {
             let view = NotchView(value: range + Int(style.minimumValue), radius: CGFloat(style.notchRadius))
-            customViews.append(view)
+            notchViews.append(view)
         }
     }
     
     private func colorNotches(by value: Float) {
-        for customView in customViews {
-            customView.backgroundColor = Float(customView.value) < value ? style.primaryColor : style.secondaryColor
+        for notchView in notchViews {
+            notchView.backgroundColor = Float(notchView.value) < value ? style.primaryColor : style.secondaryColor
         }
     }
     
     private func createNotchesStackView() {
-        notchesStackView = UIStackView(arrangedSubviews: customViews)
+        notchesStackView = UIStackView(arrangedSubviews: notchViews)
     }
     
     // MARK: Style
     
-    private func sliderStyle(s: UISlider) {
+    private func sliderStyle(_ s: UISlider) {
         s.minimumValue = style.minimumValue
         s.maximumValue = style.maximumValue
         s.minimumTrackTintColor = style.primaryColor
         s.maximumTrackTintColor = style.secondaryColor
     }
     
-    private func notchesStackViewStyle(n: UIStackView) {
-        n.backgroundColor = .blue
+    private func notchesStackViewStyle(_ n: UIStackView) {
         n.axis = .horizontal
         n.distribution = .equalSpacing
         n.alignment = .bottom
@@ -164,7 +164,7 @@ class NotchSlider: UIView {
     
     // MARK: Layout
     
-    private func sliderConstraints(s: UISlider) {
+    private func sliderConstraints(_ s: UISlider) {
         addSubview(s)
         s.translatesAutoresizingMaskIntoConstraints = false
         s.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
@@ -172,13 +172,13 @@ class NotchSlider: UIView {
         s.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
     }
     
-    private func notchesStackViewConstraints(n: UIStackView) {
+    private func notchesStackViewConstraints(_ n: UIStackView) {
         addSubview(n)
         n.translatesAutoresizingMaskIntoConstraints = false
         n.heightAnchor.constraint(equalToConstant: CGFloat(style.notchRadius*2)).isActive = true
         n.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         n.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        n.centerYAnchor.constraint(equalTo: slider.centerYAnchor).isActive = true
+        n.centerYAnchor.constraint(equalTo: slider.centerYAnchor, constant: 1).isActive = true
     }
     
 }

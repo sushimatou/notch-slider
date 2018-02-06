@@ -33,6 +33,10 @@ class SectionHeaderView: UITableViewHeaderFooterView {
         sectionTitleLabel.sizeToFit()
     }
     
+    func setDetailsBackgroundColor(color: UIColor){
+        detailsTextView.backgroundColor = color
+    }
+    
     func setDetailsText(text: String) {
         detailsTextView.text = text
         detailsTextView.sizeToFit()
@@ -56,35 +60,35 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     
     // Todo -> Use the-fork styles
     
-    private func sectionTitleLabelStyle(_ sectionTitleLabel: UILabel) {
-        sectionTitleLabel.font = UIFont(name: "RalewayX", size: 12)
-        sectionTitleLabel.textColor = .darkGray
+    private func sectionTitleLabelStyle(_ s: UILabel) {
+        s.font = UIFont(name: "RalewayX", size: 12)
+        s.textColor = .darkGray
     }
     
-    private func detailsTextViewStyle(_ detailsTextView: UITextView) {
-        detailsTextView.textContainerInset = UIEdgeInsetsMake(3, 5, 5, 3)
-        detailsTextView.sizeToFit()
-        detailsTextView.isScrollEnabled = false
-        detailsTextView.textAlignment = .center
-        detailsTextView.textColor = .white
-        detailsTextView.font = UIFont(name: "RalewayX", size: 12)
-        detailsTextView.backgroundColor = UIColor(red:0.24, green:0.25, blue:0.29, alpha:1)
-        detailsTextView.layer.cornerRadius = 10
-        detailsTextView.clipsToBounds = true
+    private func detailsTextViewStyle(_ d: UITextView) {
+        d.textContainerInset = UIEdgeInsetsMake(3, 5, 3, 5)
+        d.sizeToFit()
+        d.isScrollEnabled = false
+        d.textAlignment = .center
+        d.textColor = .white
+        d.font = UIFont(name: "RalewayX", size: 12)
+        d.backgroundColor = UIColor(red:0.94, green:0.94, blue:0.94, alpha:1)
+        d.layer.cornerRadius = 10
+        d.clipsToBounds = true
     }
     
     // Constraints
     
-    private func sectionTitleLabelConstraints(_ sectionTitle: UILabel) {
-        sectionTitle.translatesAutoresizingMaskIntoConstraints = false
-        sectionTitle.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true
-        sectionTitle.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+    private func sectionTitleLabelConstraints(_ s: UILabel) {
+        s.translatesAutoresizingMaskIntoConstraints = false
+        s.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true
+        s.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     
-    private func detailsTextViewConstraints(_ detailsTextView: UITextView) {
-        detailsTextView.translatesAutoresizingMaskIntoConstraints = false
-        detailsTextView.leadingAnchor.constraint(equalTo: sectionTitleLabel.trailingAnchor, constant: 10).isActive = true
-        detailsTextView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+    private func detailsTextViewConstraints(_ d: UITextView) {
+        d.translatesAutoresizingMaskIntoConstraints = false
+        d.leadingAnchor.constraint(equalTo: sectionTitleLabel.trailingAnchor, constant: 10).isActive = true
+        d.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     
 }

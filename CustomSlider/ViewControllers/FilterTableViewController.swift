@@ -95,9 +95,11 @@ extension FilterTableViewController: NotchSliderDelegate {
         let header = tableView.headerView(forSection: 0) as! SectionHeaderView
         switch sliderValue {
         case .start:
+            header.setDetailsBackgroundColor(color: UIColor(red:0.94, green:0.94, blue:0.94, alpha:1))
             header.setDetailsText(text: "toutes")
         case .inProgress(let value):
             header.setDetailsText(text: "\(value)"+"+")
+            header.setDetailsBackgroundColor(color: UIColor(red:0.24, green:0.25, blue:0.29, alpha:1))
         case .end:
             header.setDetailsText(text: "10")
         }
