@@ -18,8 +18,8 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         detailsTextView.text = "toutes"
-        render()
         layout()
+        render()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -54,16 +54,21 @@ class SectionHeaderView: UITableViewHeaderFooterView {
 
     // Styles
     
+    // Todo -> Use the-fork styles
+    
     private func sectionTitleLabelStyle(_ sectionTitleLabel: UILabel) {
-        
+        sectionTitleLabel.font = UIFont(name: "RalewayX", size: 12)
+        sectionTitleLabel.textColor = .darkGray
     }
     
     private func detailsTextViewStyle(_ detailsTextView: UITextView) {
         detailsTextView.textContainerInset = UIEdgeInsetsMake(3, 5, 5, 3)
         detailsTextView.sizeToFit()
         detailsTextView.isScrollEnabled = false
+        detailsTextView.textAlignment = .center
         detailsTextView.textColor = .white
-        detailsTextView.backgroundColor = .darkGray
+        detailsTextView.font = UIFont(name: "RalewayX", size: 12)
+        detailsTextView.backgroundColor = UIColor(red:0.24, green:0.25, blue:0.29, alpha:1)
         detailsTextView.layer.cornerRadius = 10
         detailsTextView.clipsToBounds = true
     }
@@ -72,13 +77,13 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     
     private func sectionTitleLabelConstraints(_ sectionTitle: UILabel) {
         sectionTitle.translatesAutoresizingMaskIntoConstraints = false
-        sectionTitle.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20).isActive = true
+        sectionTitle.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15).isActive = true
         sectionTitle.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     
     private func detailsTextViewConstraints(_ detailsTextView: UITextView) {
         detailsTextView.translatesAutoresizingMaskIntoConstraints = false
-        detailsTextView.leadingAnchor.constraint(equalTo: sectionTitleLabel.trailingAnchor, constant: 20).isActive = true
+        detailsTextView.leadingAnchor.constraint(equalTo: sectionTitleLabel.trailingAnchor, constant: 10).isActive = true
         detailsTextView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     

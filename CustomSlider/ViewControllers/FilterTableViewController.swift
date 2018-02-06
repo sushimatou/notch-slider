@@ -54,6 +54,8 @@ class FilterTableViewController: UITableViewController {
             secondaryColor: UIColor(red:0.94, green:0.94, blue:0.94, alpha:1),
             minimumValue: 7,
             maximumValue: 10,
+            textFont: UIFont(name: "Helvetica", size: 12)!,
+            textColor: .darkGray ,
             notchRadius: 4,
             notchesCount: 4,
             width: cell.contentView.frame.width)
@@ -68,7 +70,6 @@ class FilterTableViewController: UITableViewController {
         case 0:
             let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerViewReuseId) as! SectionHeaderView
             headerView.setTitle(text: "Note Moyenne".uppercased())
-            
             return headerView
         default:
             return nil // noop
@@ -76,7 +77,7 @@ class FilterTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 20
+        return 40
     }
     
     private func registerClasses() {
@@ -98,7 +99,7 @@ extension FilterTableViewController: NotchSliderDelegate {
         case .inProgress(let value):
             header.setDetailsText(text: "\(value)"+"+")
         case .end:
-            break
+            header.setDetailsText(text: "10")
         }
     }
     

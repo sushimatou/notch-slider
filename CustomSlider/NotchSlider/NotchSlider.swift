@@ -15,20 +15,20 @@ class NotchSlider: UIView {
     private final class NotchView: UIView {
         
         let value: Int
-        let radius: Float
+        let radius: CGFloat
         
-        init(value: Int, point: CGPoint, radius: Float) {
+        override var intrinsicContentSize: CGSize {
+            return CGSize(width: radius * 2, height: radius * 2)
+        }
+        
+        init(value: Int, radius: CGFloat) {
             self.value = value
             self.radius = radius
-            super.init(frame: CGRect(
-                x: point.x - CGFloat(radius),
-                y: point.y,
-                width: CGFloat(radius * 2),
-                height: CGFloat(radius * 2)))
-            layer.cornerRadius = CGFloat(radius)
+            super.init(frame: .zero)
+            layer.cornerRadius = 4
             clipsToBounds = true
         }
-    
+        
         required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
@@ -43,6 +43,8 @@ class NotchSlider: UIView {
             secondaryColor: UIColor.blue,
             minimumValue: 7,
             maximumValue: 10,
+            textFont: UIFont(),
+            textColor: .black,
             notchRadius: 2,
             notchesCount: 4,
             width: 50)
@@ -50,6 +52,8 @@ class NotchSlider: UIView {
         let secondaryColor: UIColor
         let minimumValue: Float
         let maximumValue: Float
+        let textFont: UIFont
+        let textColor: UIColor
         let notchRadius: Float
         let notchesCount: Int
         let width: CGFloat
@@ -59,8 +63,8 @@ class NotchSlider: UIView {
 
     private let style: NotchSliderStyle
     private let slider = UISlider()
-    private var notches = [CGPoint]()
-    private var notchViews = [NotchView]()
+    private var customViews = [NotchView]()
+    private var notchesStackView = UIStackView()
     weak var delegate: NotchSliderDelegate?
     
     // MARL: Computed Properties
@@ -70,7 +74,6 @@ class NotchSlider: UIView {
         return CGSize(width: size.width, height: 50)
     }
     
-    
     var sliderValue: SliderValue {
         switch slider.value {
         case style.minimumValue:
@@ -78,7 +81,7 @@ class NotchSlider: UIView {
         case style.maximumValue:
             return .end
         default:
-            return SliderValue.inProgress(value: Double(slider.value))
+            return SliderValue.inProgress(value: String(format: "%.1f", slider.value))
         }
     }
     
@@ -88,79 +91,94 @@ class NotchSlider: UIView {
         self.style = style
         let frame = CGRect(x: 0, y: 0, width: style.width, height: 50)
         super.init(frame: frame)
+        addTargetForSlider()
+        createNotches()
+        createNotchesStackView()
+        colorNotches(by: slider.value)
         render()
+        layout()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Set Value Selector
+    // MARK: Set Value Target & Selector
+    
+    private func addTargetForSlider() {
+        slider.addTarget(self, action: #selector(valueDidChanged), for: UIControlEvents.valueChanged)
+    }
 
     @objc private func valueDidChanged() {
-        colorNotchView(by: slider.value)
         delegate?.valueDidChange(sliderValue: sliderValue)
+        colorNotches(by: slider.value)
     }
     
     // MARK: UI Rendering
     
-    private func render() {
-        createSlider()
-        for notchRange in 0..<style.notchesCount {
-            createNotchPoint(notchRange: notchRange)
-            createNotchView(notchRange: notchRange)
-            createValueLabel(notchRange: notchRange)
-        }
-        colorNotchView(by: slider.value)
+    private func layout() {
+        sliderConstraints(s: slider)
+        notchesStackViewConstraints(n: notchesStackView)
         bringSubview(toFront: slider)
     }
     
-    private func createSlider() {
-        slider.addTarget(self, action: #selector(valueDidChanged), for: UIControlEvents.valueChanged)
-        slider.translatesAutoresizingMaskIntoConstraints = false
-        slider.minimumValue = style.minimumValue
-        slider.maximumValue = style.maximumValue
-        slider.minimumTrackTintColor = style.primaryColor
-        slider.maximumTrackTintColor = style.secondaryColor
-        addSubview(slider)
-        slider.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
-        slider.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
-        slider.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
+    private func render() {
+        sliderStyle(s: slider)
+        notchesStackViewStyle(n: notchesStackView)
     }
     
-    private func createNotchPoint(notchRange: Int) {
-        let notchPoint = CGPoint(
-            x: CGFloat(notchRange)/CGFloat(style.notchesCount-1) * frame.width,
-            y: slider.center.y - CGFloat(style.notchRadius)
-        )
-        notches.insert(notchPoint, at: notchRange)
-    }
+    // MARK: Slider Creation
     
-    private func createNotchView(notchRange: Int) {
-        let notchView = NotchView(
-            value: Int(style.minimumValue) + notchRange,
-            point: notches[notchRange],
-            radius: style.notchRadius)
-        notchViews.insert(notchView, at: notchRange)
-        addSubview(notchView)
-    }
-    
-    private func createValueLabel(notchRange: Int) {
-        let valueLabel = UILabel()
-        valueLabel.text = "\(notchViews[notchRange].value)"
-        valueLabel.textAlignment = .center
-        valueLabel.textColor = .darkGray
-        valueLabel.sizeToFit()
-        valueLabel.center.y = notchViews[notchRange].frame.midY + 30
-        valueLabel.center.x = notchViews[notchRange].frame.midX
-        addSubview(valueLabel)
-    }
-    
-    private func colorNotchView(by value: Float) {
-        notchViews = notchViews.flatMap { (notchView) -> NotchView in
-            notchView.backgroundColor = Float(notchView.value) <= value ? slider.minimumTrackTintColor : slider.maximumTrackTintColor
-            return notchView
+    private func createNotches() {
+        for range in 0..<style.notchesCount {
+            let view = NotchView(value: range + Int(style.minimumValue), radius: CGFloat(style.notchRadius))
+            customViews.append(view)
         }
+    }
+    
+    private func colorNotches(by value: Float) {
+        for customView in customViews {
+            customView.backgroundColor = Float(customView.value) < value ? style.primaryColor : style.secondaryColor
+        }
+    }
+    
+    private func createNotchesStackView() {
+        notchesStackView = UIStackView(arrangedSubviews: customViews)
+    }
+    
+    // MARK: Style
+    
+    private func sliderStyle(s: UISlider) {
+        s.minimumValue = style.minimumValue
+        s.maximumValue = style.maximumValue
+        s.minimumTrackTintColor = style.primaryColor
+        s.maximumTrackTintColor = style.secondaryColor
+    }
+    
+    private func notchesStackViewStyle(n: UIStackView) {
+        n.backgroundColor = .blue
+        n.axis = .horizontal
+        n.distribution = .equalSpacing
+        n.alignment = .bottom
+    }
+    
+    // MARK: Layout
+    
+    private func sliderConstraints(s: UISlider) {
+        addSubview(s)
+        s.translatesAutoresizingMaskIntoConstraints = false
+        s.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
+        s.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
+        s.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
+    }
+    
+    private func notchesStackViewConstraints(n: UIStackView) {
+        addSubview(n)
+        n.translatesAutoresizingMaskIntoConstraints = false
+        n.heightAnchor.constraint(equalToConstant: CGFloat(style.notchRadius*2)).isActive = true
+        n.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        n.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        n.centerYAnchor.constraint(equalTo: slider.centerYAnchor).isActive = true
     }
     
 }
