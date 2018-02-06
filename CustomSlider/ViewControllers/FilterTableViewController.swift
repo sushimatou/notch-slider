@@ -94,9 +94,9 @@ extension FilterTableViewController: NotchSliderDelegate {
         let header = tableView.headerView(forSection: 0) as! SectionHeaderView
         switch sliderValue {
         case .start:
-            header.setDynamicText(text: "toutes")
+            header.setDetailsText(text: "toutes")
         case .inProgress(let value):
-            header.setDynamicText(text: "\(value)"+"+")
+            header.setDetailsText(text: "\(value)"+"+")
         case .end:
             break
         }

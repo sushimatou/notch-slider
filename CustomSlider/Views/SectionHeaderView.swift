@@ -13,11 +13,11 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     // MARK: Properties
     
     private let sectionTitleLabel = UILabel()
-    private let dynamicLabel = UILabel()
+    private let detailsTextView = UITextView()
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
-        dynamicLabel.text = "toutes"
+        detailsTextView.text = "toutes"
         render()
         layout()
     }
@@ -33,23 +33,23 @@ class SectionHeaderView: UITableViewHeaderFooterView {
         sectionTitleLabel.sizeToFit()
     }
     
-    func setDynamicText(text: String) {
-        dynamicLabel.text = text
-        dynamicLabel.sizeToFit()
+    func setDetailsText(text: String) {
+        detailsTextView.text = text
+        detailsTextView.sizeToFit()
     }
     
     // MARK: UI Rendering
     
     private func layout() {
         addSubview(sectionTitleLabel)
-        addSubview(dynamicLabel)
+        addSubview(detailsTextView)
         sectionTitleLabelConstraints(sectionTitleLabel)
-        dynamicLabelConstraints(dynamicLabel)
+        detailsTextViewConstraints(detailsTextView)
     }
     
     private func render() {
         sectionTitleLabelStyle(sectionTitleLabel)
-        dynamicLabelStyle(dynamicLabel)
+        detailsTextViewStyle(detailsTextView)
     }
 
     // Styles
@@ -58,16 +58,15 @@ class SectionHeaderView: UITableViewHeaderFooterView {
         
     }
     
-    private func dynamicLabelStyle(_ dynamicLabel: UILabel) {
-        let insets = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
-        let rect = UIEdgeInsetsInsetRect(dynamicLabel.frame, insets)
-        dynamicLabel.textColor = .white
-        dynamicLabel.drawText(in: rect)
-        dynamicLabel.backgroundColor = .darkGray
-        dynamicLabel.layer.cornerRadius = 10
-        dynamicLabel.clipsToBounds = true
+    private func detailsTextViewStyle(_ detailsTextView: UITextView) {
+        detailsTextView.textContainerInset = UIEdgeInsetsMake(3, 5, 5, 3)
+        detailsTextView.sizeToFit()
+        detailsTextView.isScrollEnabled = false
+        detailsTextView.textColor = .white
+        detailsTextView.backgroundColor = .darkGray
+        detailsTextView.layer.cornerRadius = 10
+        detailsTextView.clipsToBounds = true
     }
-    
     
     // Constraints
     
@@ -77,11 +76,10 @@ class SectionHeaderView: UITableViewHeaderFooterView {
         sectionTitle.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     
-    
-    private func dynamicLabelConstraints(_ dynamicLabel: UILabel) {
-        dynamicLabel.translatesAutoresizingMaskIntoConstraints = false
-        dynamicLabel.leadingAnchor.constraint(equalTo: sectionTitleLabel.trailingAnchor, constant: 20).isActive = true
-        dynamicLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+    private func detailsTextViewConstraints(_ detailsTextView: UITextView) {
+        detailsTextView.translatesAutoresizingMaskIntoConstraints = false
+        detailsTextView.leadingAnchor.constraint(equalTo: sectionTitleLabel.trailingAnchor, constant: 20).isActive = true
+        detailsTextView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     
 }
