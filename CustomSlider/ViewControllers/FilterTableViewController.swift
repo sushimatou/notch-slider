@@ -71,7 +71,7 @@ class FilterTableViewController: UITableViewController {
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: averagePriceCellReuseId) as! AveragePriceTableViewCell
-            let rangeSlider = RangeSlider(minimumValue: 18, maximumValue: 250)
+            let rangeSlider = RangeSlider(minimumValue: 18, maximumValue: 250, primaryColor: UIColor.blue, secondaryColor: UIColor.red)
             cell.rangeSlider = rangeSlider
             return cell
         default:

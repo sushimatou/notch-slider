@@ -10,7 +10,9 @@ import UIKit
 
 class RangeSlider: UIControl {
     
-    private final class RangeSliderThumbLayer {
+    // MARK: Range slider thumb layer
+    
+    private final class RangeSliderThumbLayer: CALayer {
         
         var isHighlighted: Bool = false
         weak var rangeSlider: RangeSlider?
@@ -19,13 +21,14 @@ class RangeSlider: UIControl {
     
     // MARK: Properties
     
-    let minimumValue: Int
-    let maximumValue: Int
-    let primaryColor: UIColor
-    let secondaryColor: UIColor
-    let trackLayer = CALayer()
-    let minimumThumbLayer = CALayer()
-    let maximulThumbLayer = CALayer()
+    private let minimumValue: Int
+    private let maximumValue: Int
+    private let primaryColor: UIColor
+    private let secondaryColor: UIColor
+    private let trackLayer = CALayer()
+    private let minimumThumbLayer = RangeSliderThumbLayer()
+    private let maximumThumbLayer = RangeSliderThumbLayer()
+    private var previousLocation = CGPoint()
     
     var thumbHeight: CGFloat {
         return 2
@@ -37,6 +40,8 @@ class RangeSlider: UIControl {
         self.primaryColor = primaryColor
         self.secondaryColor = secondaryColor
         super.init(frame: .zero)
+        minimumThumbLayer.rangeSlider = self
+        maximumThumbLayer.rangeSlider = self
         addSublayers()
     }
     
@@ -47,7 +52,15 @@ class RangeSlider: UIControl {
     private func addSublayers() {
         layer.addSublayer(trackLayer)
         layer.addSublayer(minimumThumbLayer)
-        layer.addSublayer(maximulThumbLayer)
+        layer.addSublayer(maximumThumbLayer)
+    }
+    
+    // MARK: UIControl override methods
+    
+    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        minimumThumbLayer.isHighlighted = minimumThumbLayer.frame.contains(previousLocation)
+        maximumThumbLayer.isHighlighted = maximumThumbLayer.frame.contains(previousLocation)
+        return minimumThumbLayer.isHighlighted || maximumThumbLayer.isHighlighted
     }
     
     // UI rendering
@@ -60,16 +73,4 @@ class RangeSlider: UIControl {
         
     }
     
-    
-    
-    
-    
-//    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-//
-//    }
-//
-//    override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-//
-//    }
-
 }
