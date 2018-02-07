@@ -64,6 +64,7 @@ class NotchSlider: UIView {
     private let style: NotchSliderStyle
     private let slider = UISlider()
     private var notchViews = [NotchView]()
+    private var valueLabels = [UILabel]()
     private var notchesStackView = UIStackView()
     private var labelsStackView = UIStackView()
     weak var delegate: NotchSliderDelegate?
@@ -94,7 +95,9 @@ class NotchSlider: UIView {
         super.init(frame: frame)
         addTargetForSlider()
         createNotches()
+        createLabels()
         createNotchesStackView()
+        createLabelsStackView()
         colorNotches(by: slider.value)
         render()
         layout()
@@ -120,12 +123,14 @@ class NotchSlider: UIView {
     private func layout() {
         sliderConstraints(slider)
         notchesStackViewConstraints(notchesStackView)
+        valueLablesStackViewConstraints(labelsStackView)
         bringSubview(toFront: slider)
     }
     
     private func render() {
         sliderStyle(slider)
         notchesStackViewStyle(notchesStackView)
+        valueLablesStackViewStyle(labelsStackView)
     }
     
     // MARK: Slider Creation
@@ -134,6 +139,15 @@ class NotchSlider: UIView {
         for range in 0..<style.notchesCount {
             let view = NotchView(value: range + Int(style.minimumValue), radius: CGFloat(style.notchRadius))
             notchViews.append(view)
+        }
+    }
+    
+    private func createLabels() {
+        for range in 0..<style.notchesCount {
+            let label = UILabel()
+            label.text = "\(range + Int(style.minimumValue))"
+            label.textAlignment = .center
+            valueLabels.append(label)
         }
     }
     
@@ -147,7 +161,11 @@ class NotchSlider: UIView {
         notchesStackView = UIStackView(arrangedSubviews: notchViews)
     }
     
-    // MARK: Style
+    private func createLabelsStackView() {
+        labelsStackView = UIStackView(arrangedSubviews: valueLabels)
+    }
+    
+    // MARK: Styles
     
     private func sliderStyle(_ s: UISlider) {
         s.minimumValue = style.minimumValue
@@ -160,6 +178,12 @@ class NotchSlider: UIView {
         n.axis = .horizontal
         n.distribution = .equalSpacing
         n.alignment = .bottom
+    }
+    
+    private func valueLablesStackViewStyle(_ v: UIStackView) {
+        v.axis = .horizontal
+        v.distribution = .equalSpacing
+        v.alignment = .bottom
     }
     
     // MARK: Layout
@@ -179,6 +203,15 @@ class NotchSlider: UIView {
         n.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         n.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         n.centerYAnchor.constraint(equalTo: slider.centerYAnchor, constant: 1).isActive = true
+    }
+    
+    private func valueLablesStackViewConstraints(_ v: UIStackView) {
+        addSubview(v)
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.heightAnchor.constraint(equalToConstant: 15).isActive = true
+        v.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        v.trailingAnchor.constraint(equalTo: trailingAnchor, constant: CGFloat(style.notchRadius)).isActive = true
+        v.centerYAnchor.constraint(equalTo: slider.centerYAnchor, constant: 25).isActive = true
     }
     
 }
