@@ -14,6 +14,7 @@ class FilterTableViewController: UITableViewController {
 
     private var average: String?
     private let averageGradeCellReuseId = "averageGradeCellReuseId"
+    private let averagePriceCellReuseId = "averagePriceCellReuseId"
     private let headerViewReuseId = "headerViewReuseId"
     
     // MARK: - LifeCycle 
@@ -31,7 +32,7 @@ class FilterTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -42,37 +43,54 @@ class FilterTableViewController: UITableViewController {
         switch indexPath.section {
         case 0:
             return 80
+        case 1:
+            return 80
         default:
             return 0
         }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: averageGradeCellReuseId) as! AverageGradeTableViewCell
-        let notchSliderStyle = NotchSlider.NotchSliderStyle(
-            primaryColor: UIColor(red:0.4, green:0.68, blue:0.31, alpha:1),
-            secondaryColor: UIColor(red:0.94, green:0.94, blue:0.94, alpha:1),
-            minimumValue: 7,
-            maximumValue: 10,
-            textFont: UIFont(name: "Helvetica", size: 12)!,
-            textColor: .darkGray ,
-            notchRadius: 4,
-            notchesCount: 4,
-            width: cell.contentView.frame.width)
-        let notchSlider = NotchSlider(style: notchSliderStyle)
-        notchSlider.delegate = self
-        cell.notchSlider = notchSlider
-        return cell
+        
+        switch indexPath.section {
+        case 0:
+            let cell = tableView.dequeueReusableCell(withIdentifier: averageGradeCellReuseId) as! AverageGradeTableViewCell
+            let notchSliderStyle = NotchSlider.NotchSliderStyle(
+                primaryColor: UIColor(red:0.4, green:0.68, blue:0.31, alpha:1),
+                secondaryColor: UIColor(red:0.94, green:0.94, blue:0.94, alpha:1),
+                minimumValue: 7,
+                maximumValue: 10,
+                textFont: UIFont(name: "Helvetica", size: 12)!,
+                textColor: .darkGray ,
+                notchRadius: 4,
+                notchesCount: 4,
+                width: cell.contentView.frame.width)
+            let notchSlider = NotchSlider(style: notchSliderStyle)
+            notchSlider.delegate = self
+            cell.notchSlider = notchSlider
+            return cell
+        case 1:
+            let cell = tableView.dequeueReusableCell(withIdentifier: averagePriceCellReuseId) as! AveragePriceTableViewCell
+            let rangeSlider = RangeSlider(minimumValue: 18, maximumValue: 250)
+            cell.rangeSlider = rangeSlider
+            return cell
+        default:
+            return UITableViewCell() // noop
+        }
+        
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerViewReuseId) as! SectionHeaderView
         switch section {
         case 0:
-            let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerViewReuseId) as! SectionHeaderView
             headerView.setTitle(text: "Note Moyenne".uppercased())
             return headerView
+        case 1:
+            headerView.setTitle(text: "Prix Moyen".uppercased())
+            return headerView
         default:
-            return nil // noop
+            return headerView // noop
         }
     }
     
@@ -82,6 +100,7 @@ class FilterTableViewController: UITableViewController {
     
     private func registerClasses() {
         tableView.register(AverageGradeTableViewCell.self, forCellReuseIdentifier: averageGradeCellReuseId)
+        tableView.register(AveragePriceTableViewCell.self, forCellReuseIdentifier: averagePriceCellReuseId)
         tableView.register(SectionHeaderView.self, forHeaderFooterViewReuseIdentifier: headerViewReuseId)
     }
     
