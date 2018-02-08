@@ -17,6 +17,8 @@ class AveragePriceTableViewCell: UITableViewCell {
         }
     }
     
+    // Layout
+    
     private func rangeSliderContraints(_ r: RangeSlider) {
         r.translatesAutoresizingMaskIntoConstraints = false
         r.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20).isActive = true

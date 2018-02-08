@@ -16,6 +16,8 @@ class FilterTableViewController: UITableViewController {
     private let averageGradeCellReuseId = "averageGradeCellReuseId"
     private let averagePriceCellReuseId = "averagePriceCellReuseId"
     private let headerViewReuseId = "headerViewReuseId"
+    private let grayTheFork = UIColor(red:0.94, green:0.94, blue:0.94, alpha:1)
+    private let greenTheFork = UIColor(red:0.4, green:0.68, blue:0.31, alpha:1)
     
     // MARK: - LifeCycle 
     
@@ -56,8 +58,8 @@ class FilterTableViewController: UITableViewController {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: averageGradeCellReuseId) as! AverageGradeTableViewCell
             let notchSliderStyle = NotchSlider.NotchSliderStyle(
-                primaryColor: UIColor(red:0.4, green:0.68, blue:0.31, alpha:1),
-                secondaryColor: UIColor(red:0.94, green:0.94, blue:0.94, alpha:1),
+                primaryColor: greenTheFork,
+                secondaryColor: grayTheFork,
                 minimumValue: 7,
                 maximumValue: 10,
                 textFont: UIFont(name: "Helvetica", size: 12)!,
@@ -71,7 +73,7 @@ class FilterTableViewController: UITableViewController {
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: averagePriceCellReuseId) as! AveragePriceTableViewCell
-            let rangeSlider = RangeSlider(minimumValue: 18, maximumValue: 250, primaryColor: UIColor.blue, secondaryColor: UIColor.red)
+            let rangeSlider = RangeSlider(minimumValue: 18, maximumValue: 250, primaryColor: UIColor.blue, secondaryColor: grayTheFork)
             cell.rangeSlider = rangeSlider
             return cell
         default:
