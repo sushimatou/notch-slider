@@ -8,13 +8,38 @@
 
 import UIKit
 
+public class LabelWithInsets: UILabel {
+    
+    let insets: UIEdgeInsets
+    
+    public override var intrinsicContentSize: CGSize {
+        var intrinsicContentSize = super.intrinsicContentSize
+        intrinsicContentSize.height += insets.top + insets.bottom
+        intrinsicContentSize.width += insets.left + insets.right
+        return intrinsicContentSize
+    }
+    
+    public override func drawText(in rect: CGRect) {
+        super.drawText(in: UIEdgeInsetsInsetRect(rect, insets))
+    }
+    
+    public required init(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public init(insets: UIEdgeInsets) {
+        self.insets = insets
+        super.init(frame: .zero)
+    }
+}
+
 class SectionHeaderView: UITableViewHeaderFooterView {
     
     // MARK: Properties
     
     private let sectionTitleLabel = UILabel()
-    private let detailsTextView = UITextView()
-
+    private let detailsTextView = LabelWithInsets(insets: UIEdgeInsets(top: 3, left: 10, bottom: 3, right: 10))
+    
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         detailsTextView.text = "toutes"
@@ -33,13 +58,16 @@ class SectionHeaderView: UITableViewHeaderFooterView {
         sectionTitleLabel.sizeToFit()
     }
     
+    func setDetailsTextColor(color: UIColor) {
+        
+    }
+    
     func setDetailsBackgroundColor(color: UIColor){
         detailsTextView.backgroundColor = color
     }
     
     func setDetailsText(text: String) {
         detailsTextView.text = text
-        detailsTextView.sizeToFit()
     }
     
     // MARK: UI Rendering
@@ -65,11 +93,7 @@ class SectionHeaderView: UITableViewHeaderFooterView {
         s.textColor = .darkGray
     }
     
-    private func detailsTextViewStyle(_ d: UITextView) {
-        d.textContainerInset = UIEdgeInsetsMake(3, 5, 3, 5)
-        d.sizeToFit()
-        d.isScrollEnabled = false
-        d.textAlignment = .center
+    private func detailsTextViewStyle(_ d: LabelWithInsets) {
         d.textColor = .white
         d.font = UIFont(name: "RalewayX", size: 12)
         d.backgroundColor = UIColor(red:0.94, green:0.94, blue:0.94, alpha:1)
@@ -85,7 +109,7 @@ class SectionHeaderView: UITableViewHeaderFooterView {
         s.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     
-    private func detailsTextViewConstraints(_ d: UITextView) {
+    private func detailsTextViewConstraints(_ d: LabelWithInsets) {
         d.translatesAutoresizingMaskIntoConstraints = false
         d.leadingAnchor.constraint(equalTo: sectionTitleLabel.trailingAnchor, constant: 10).isActive = true
         d.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true

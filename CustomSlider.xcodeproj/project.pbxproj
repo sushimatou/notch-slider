@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6B261C442017954F0055205B /* NotchSliderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B261C432017954F0055205B /* NotchSliderDelegate.swift */; };
 		6B5016B82022363700201417 /* FilterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5016B72022363700201417 /* FilterTableViewController.swift */; };
 		6B627FCE202B557800EC08B5 /* AveragePriceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B627FCD202B557800EC08B5 /* AveragePriceTableViewCell.swift */; };
 		6B74033E202B38B500E45F71 /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B74033D202B38B500E45F71 /* RangeSlider.swift */; };
@@ -39,7 +38,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6B261C432017954F0055205B /* NotchSliderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchSliderDelegate.swift; sourceTree = "<group>"; };
 		6B5016B72022363700201417 /* FilterTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTableViewController.swift; sourceTree = "<group>"; };
 		6B627FCD202B557800EC08B5 /* AveragePriceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AveragePriceTableViewCell.swift; sourceTree = "<group>"; };
 		6B74033D202B38B500E45F71 /* RangeSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
@@ -104,7 +102,6 @@
 			isa = PBXGroup;
 			children = (
 				6BF7544420177D8100A70FFE /* NotchSlider.swift */,
-				6B261C432017954F0055205B /* NotchSliderDelegate.swift */,
 			);
 			path = NotchSlider;
 			sourceTree = "<group>";
@@ -150,9 +147,9 @@
 			isa = PBXGroup;
 			children = (
 				6B74033C202B378A00E45F71 /* RangeSlider */,
-				6B080EA32028A9B000DD0C23 /* ViewControllers */,
 				6B98DD232024A93200938D77 /* NotchSlider */,
 				6BA14C822023567F008354A6 /* Cells */,
+				6B080EA32028A9B000DD0C23 /* ViewControllers */,
 				6BA14C8120235674008354A6 /* Views */,
 				6BF7541620177D3700A70FFE /* AppDelegate.swift */,
 				6BF7541D20177D3700A70FFE /* Assets.xcassets */,
@@ -315,7 +312,6 @@
 			files = (
 				6BF7541720177D3700A70FFE /* AppDelegate.swift in Sources */,
 				6BA14C8420235730008354A6 /* SectionHeaderView.swift in Sources */,
-				6B261C442017954F0055205B /* NotchSliderDelegate.swift in Sources */,
 				6B627FCE202B557800EC08B5 /* AveragePriceTableViewCell.swift in Sources */,
 				6B5016B82022363700201417 /* FilterTableViewController.swift in Sources */,
 				6BF7544520177D8100A70FFE /* NotchSlider.swift in Sources */,

@@ -8,6 +8,17 @@
 
 import UIKit
 
+protocol NotchSliderDelegate : NSObjectProtocol {
+    func valueDidChange(sliderValue: SliderValue)
+}
+
+enum SliderValue {
+    case start
+    case inProgress(value: String)
+    case end
+}
+
+
 class NotchSlider: UIView {
     
     // MARK: NotchView
@@ -63,6 +74,7 @@ class NotchSlider: UIView {
 
     private let style: NotchSliderStyle
     private let slider = UISlider()
+    private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     private var notchViews = [NotchView]()
     private var valueLabels = [UILabel]()
     private var notchesStackView = UIStackView()
@@ -111,6 +123,10 @@ class NotchSlider: UIView {
     
     private func addTargetForSlider() {
         slider.addTarget(self, action: #selector(valueDidChanged), for: UIControlEvents.valueChanged)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        feedbackGenerator.prepare()
     }
 
     @objc private func valueDidChanged() {
