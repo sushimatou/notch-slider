@@ -74,6 +74,7 @@ class FilterTableViewController: UITableViewController {
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: averagePriceCellReuseId) as! AveragePriceTableViewCell
             let rangeSlider = RangeSlider()
+            rangeSlider.trackHighlightTintColor = greenTheFork
             cell.rangeSlider = rangeSlider
             return cell
         default:
