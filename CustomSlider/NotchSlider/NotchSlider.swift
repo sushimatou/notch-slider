@@ -139,14 +139,14 @@ class NotchSlider: UIView {
     private func layout() {
         sliderConstraints(slider)
         notchesStackViewConstraints(notchesStackView)
-        valueLablesStackViewConstraints(labelsStackView)
+        valueLabelsStackViewConstraints(labelsStackView)
         bringSubview(toFront: slider)
     }
     
     private func render() {
         sliderStyle(slider)
         notchesStackViewStyle(notchesStackView)
-        valueLablesStackViewStyle(labelsStackView)
+        valueLabelsStackViewStyle(labelsStackView)
     }
     
     // MARK: Slider Creation
@@ -196,7 +196,7 @@ class NotchSlider: UIView {
         n.alignment = .bottom
     }
     
-    private func valueLablesStackViewStyle(_ v: UIStackView) {
+    private func valueLabelsStackViewStyle(_ v: UIStackView) {
         v.axis = .horizontal
         v.distribution = .equalSpacing
         v.alignment = .bottom
@@ -204,30 +204,30 @@ class NotchSlider: UIView {
     
     // MARK: Layout
     
-    private func sliderConstraints(_ s: UISlider) {
-        addSubview(s)
-        s.translatesAutoresizingMaskIntoConstraints = false
-        s.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
-        s.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
-        s.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
+    private func sliderConstraints(_ slider: UISlider) {
+        addSubview(slider)
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
+        slider.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
+        slider.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
     }
     
-    private func notchesStackViewConstraints(_ n: UIStackView) {
-        addSubview(n)
-        n.translatesAutoresizingMaskIntoConstraints = false
-        n.heightAnchor.constraint(equalToConstant: CGFloat(style.notchRadius*2)).isActive = true
-        n.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        n.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        n.centerYAnchor.constraint(equalTo: slider.centerYAnchor, constant: 1).isActive = true
+    private func notchesStackViewConstraints(_ notchesStackView: UIStackView) {
+        addSubview(notchesStackView)
+        notchesStackView.translatesAutoresizingMaskIntoConstraints = false
+        notchesStackView.heightAnchor.constraint(equalToConstant: CGFloat(style.notchRadius*2)).isActive = true
+        notchesStackView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        notchesStackView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        notchesStackView.centerYAnchor.constraint(equalTo: slider.centerYAnchor, constant: 1).isActive = true
     }
     
-    private func valueLablesStackViewConstraints(_ v: UIStackView) {
-        addSubview(v)
-        v.translatesAutoresizingMaskIntoConstraints = false
-        v.heightAnchor.constraint(equalToConstant: 15).isActive = true
-        v.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        v.trailingAnchor.constraint(equalTo: trailingAnchor, constant: CGFloat(style.notchRadius)).isActive = true
-        v.centerYAnchor.constraint(equalTo: slider.centerYAnchor, constant: 25).isActive = true
+    private func valueLabelsStackViewConstraints(_ valueLabelsStackView: UIStackView) {
+        addSubview(valueLabelsStackView)
+        valueLabelsStackView.translatesAutoresizingMaskIntoConstraints = false
+        valueLabelsStackView.heightAnchor.constraint(equalToConstant: 15).isActive = true
+        valueLabelsStackView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        valueLabelsStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: CGFloat(style.notchRadius)).isActive = true
+        valueLabelsStackView.centerYAnchor.constraint(equalTo: slider.centerYAnchor, constant: 25).isActive = true
     }
     
 }

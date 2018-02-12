@@ -55,11 +55,11 @@ class RangeSlider: UIControl {
         
         override func draw(in ctx: CGContext) {
             if let slider = rangeSlider {
-                let thumbFrame = bounds.insetBy(dx: 2.0, dy: 2.0)
+                let thumbFrame = bounds.insetBy(dx: 5, dy: 5)
                 let cornerRadius = thumbFrame.height * slider.curvaceousness / 2.0
                 let thumbPath = UIBezierPath(roundedRect: thumbFrame, cornerRadius: cornerRadius)
-                let shadowColor = UIColor.gray
-                ctx.setShadow(offset: CGSize(width: 0.0, height: 2.0) , blur: 4.0, color: shadowColor.cgColor)
+                let shadowColor = UIColor(red:0, green:0, blue:0, alpha:0.2).cgColor
+                ctx.setShadow(offset: CGSize(width: 0, height: 2) , blur: 4, color: shadowColor)
                 ctx.setFillColor(slider.thumbTintColor.cgColor)
                 ctx.addPath(thumbPath.cgPath)
                 ctx.fillPath()
@@ -76,14 +76,8 @@ class RangeSlider: UIControl {
     private let minimumValueLabel = UILabel()
     private let maximumValueLabel = UILabel()
     
-    weak var delegate: RangeSliderDelegate?
-    
     override var intrinsicContentSize: CGSize {
         return CGSize(width: CGFloat(bounds.width), height: 30)
-    }
-    
-    override func layoutSubviews() {
-        updateLayerFrames()
     }
     
     var thumbWidth: CGFloat {
@@ -101,6 +95,8 @@ class RangeSlider: UIControl {
             maximumValueLabel.text = String(describing: maximumValue)
         }
     }
+    
+    weak var delegate: RangeSliderDelegate?
 
     var trackTintColor = UIColor(white: 0.9, alpha: 1.0)
     var trackHighlightTintColor = UIColor.blue
@@ -116,10 +112,16 @@ class RangeSlider: UIControl {
         super.init(frame: .zero)
         addSublayers()
         updateLayerFrames()
+        clipsToBounds = false
+        delegate?.valuesDidChanged(values: (lowerValue: lowerValue, upperValue: upperValue))
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        updateLayerFrames()
     }
     
     // MARK: Override tracking UIControls methods
@@ -135,10 +137,10 @@ class RangeSlider: UIControl {
         let location = touch.location(in: self)
         let deltaLocation = Double(location.x - previousLocation.x)
         let deltaValue = (maximumValue - minimumValue) * deltaLocation / Double(bounds.width - thumbWidth)
-        if lowerThumbLayer.isHighlighted {
+        if lowerThumbLayer.isHighlighted && location.x < upperThumbLayer.position.x - thumbWidth {
             lowerValue += deltaValue
             lowerValue = boundValue(value: lowerValue, to: minimumValue, upperValue: upperValue)
-        } else if upperThumbLayer.isHighlighted {
+        } else if upperThumbLayer.isHighlighted && location.x > lowerThumbLayer.position.x + thumbWidth {
             upperValue += deltaValue
             upperValue = boundValue(value: upperValue, to: lowerValue, upperValue: maximumValue)
         }

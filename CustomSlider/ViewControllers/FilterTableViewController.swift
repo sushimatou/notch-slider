@@ -76,6 +76,10 @@ class FilterTableViewController: UITableViewController {
             let rangeSlider = RangeSlider()
             rangeSlider.trackHighlightTintColor = greenTheFork
             rangeSlider.delegate = self
+            rangeSlider.minimumValue = 15
+            rangeSlider.maximumValue = 250
+            rangeSlider.lowerValue = 60
+            rangeSlider.upperValue = 190
             cell.rangeSlider = rangeSlider
             return cell
         default:
@@ -130,8 +134,14 @@ extension FilterTableViewController: NotchSliderDelegate {
     
 }
 
+// MARK: - Range slider delegate
+
 extension FilterTableViewController: RangeSliderDelegate {
+    
     func valuesDidChanged(values: (lowerValue: Double, upperValue: Double)) {
-        print(values)
+        let header = tableView.headerView(forSection: 1) as! SectionHeaderView
+        header.setDetailsBackgroundColor(color: UIColor.darkGray)
+        header.setDetailsText(text: "de " + String(format: "%.0f", values.lowerValue) + " €"  + " à " + String(format: "%.0f", values.upperValue) + " €" )
     }
+    
 }
