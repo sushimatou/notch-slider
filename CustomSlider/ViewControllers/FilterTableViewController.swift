@@ -75,6 +75,7 @@ class FilterTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: averagePriceCellReuseId) as! AveragePriceTableViewCell
             let rangeSlider = RangeSlider()
             rangeSlider.trackHighlightTintColor = greenTheFork
+            rangeSlider.delegate = self
             cell.rangeSlider = rangeSlider
             return cell
         default:
@@ -127,4 +128,10 @@ extension FilterTableViewController: NotchSliderDelegate {
         }
     }
     
+}
+
+extension FilterTableViewController: RangeSliderDelegate {
+    func valuesDidChanged(values: (lowerValue: Double, upperValue: Double)) {
+        print(values)
+    }
 }

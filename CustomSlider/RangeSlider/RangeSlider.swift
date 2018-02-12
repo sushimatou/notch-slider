@@ -76,6 +76,8 @@ class RangeSlider: UIControl {
     private let minimumValueLabel = UILabel()
     private let maximumValueLabel = UILabel()
     
+    weak var delegate: RangeSliderDelegate?
+    
     override var intrinsicContentSize: CGSize {
         return CGSize(width: CGFloat(bounds.width), height: 30)
     }
@@ -143,6 +145,7 @@ class RangeSlider: UIControl {
         previousLocation = location
         updateLayerFrames()
         sendActions(for: .valueChanged)
+        delegate?.valuesDidChanged(values: (lowerValue: lowerValue, upperValue: upperValue))
         return true
     }
     
