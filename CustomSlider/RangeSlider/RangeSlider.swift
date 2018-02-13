@@ -60,6 +60,7 @@ class RangeSlider: UIControl {
                 ctx.fill(rect)
             }
         }
+    
     }
     
     // MARK: Thumb Layer
@@ -71,19 +72,30 @@ class RangeSlider: UIControl {
         var isHighlighted = false
         weak var rangeSlider: RangeSlider?
         
+        
         // MARK: Layer drawing
         
         override func draw(in ctx: CGContext) {
             if let slider = rangeSlider {
-                let thumbFrame = bounds.insetBy(dx: 5, dy: 5)
+                let thumbFrame = CGRect(x: 0, y: 0, width: slider.thumbWidth, height: slider.thumbWidth)
                 let cornerRadius = thumbFrame.height * slider.curvaceousness / 2.0
                 let thumbPath = UIBezierPath(roundedRect: thumbFrame, cornerRadius: cornerRadius)
-                let shadowColor = UIColor(red:0, green:0, blue:0, alpha:0.2).cgColor
-                ctx.setShadow(offset: CGSize(width: 0, height: 2) , blur: 4, color: shadowColor)
-                ctx.setFillColor(slider.thumbTintColor.cgColor)
                 ctx.addPath(thumbPath.cgPath)
+                ctx.setFillColor(slider.thumbTintColor.cgColor)
                 ctx.fillPath()
             }
+        }
+        
+        override init() {
+            super.init()
+            shadowColor = UIColor(red:0.89, green:0.89, blue:0.89, alpha:1).cgColor
+            shadowOffset = CGSize(width: 0, height: 2)
+            shadowOpacity = 1.0;
+            shadowRadius = 4;
+        }
+        
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
         }
         
     }
@@ -97,7 +109,7 @@ class RangeSlider: UIControl {
     private let maximumValueLabel = UILabel()
     
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: CGFloat(bounds.width), height: 30)
+        return CGSize(width: CGFloat(bounds.width), height: 28)
     }
     
     var thumbWidth: CGFloat {
