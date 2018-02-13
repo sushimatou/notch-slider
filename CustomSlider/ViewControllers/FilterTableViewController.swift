@@ -139,7 +139,7 @@ extension FilterTableViewController: NotchSliderDelegate {
 
 extension FilterTableViewController: RangeSliderDelegate {
     
-    func valuesDidChanged(values: (lowerValue: Double, upperValue: Double)) {
+    func valuesDidChanged(values: RangeSlider.RangeSliderValues) {
         let header = tableView.headerView(forSection: 1) as! SectionHeaderView
         header.setDetailsBackgroundColor(color: UIColor.darkGray)
         header.setDetailsText(text: "de " + String(format: "%.0f", values.lowerValue) + " €"  + " à " + String(format: "%.0f", values.upperValue) + " €" )

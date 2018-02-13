@@ -8,16 +8,32 @@
 
 import UIKit
 
+// MARK: Delegate
+
 protocol RangeSliderDelegate : NSObjectProtocol {
-    func valuesDidChanged(values: (lowerValue: Double, upperValue: Double))
+    func valuesDidChanged(values: RangeSlider.RangeSliderValues)
 }
 
 class RangeSlider: UIControl {
     
+    // MARK: Range slider values
+    
+    // struct used for range slider delegate
+    
+    public struct RangeSliderValues {
+        var lowerValue: Double
+        var upperValue: Double
+    }
+    
     // MARK: Track Layer
     
     private final class RangeSliderTrackLayer: CALayer {
+        
+        // MARK: Properties
+        
         weak var rangeSlider: RangeSlider?
+        
+        // MARK: Layer drawing
         
         override func draw(in ctx: CGContext) {
             if let slider = rangeSlider {
@@ -49,8 +65,13 @@ class RangeSlider: UIControl {
     // MARK: Thumb Layer
     
     private final class RangeSliderThumbLayer: CALayer {
+        
+        // MARK: Properties
+        
         var isHighlighted = false
         weak var rangeSlider: RangeSlider?
+        
+        // MARK: Layer drawing
         
         override func draw(in ctx: CGContext) {
             if let slider = rangeSlider {
@@ -95,37 +116,30 @@ class RangeSlider: UIControl {
         }
     }
     
-    var lowerValue: Double = 0.2 {
-        didSet {
-            updateLayerFrames()
-        }
-    }
-    
-    var upperValue: Double = 0.8 {
-        didSet {
-            updateLayerFrames()
-        }
-    }
-    
     weak var delegate: RangeSliderDelegate?
 
     var trackTintColor = UIColor(white: 0.9, alpha: 1.0)
     var trackHighlightTintColor = UIColor.blue
     var thumbTintColor = UIColor.white
-    var curvaceousness: CGFloat = 1.0
     var previousLocation = CGPoint()
-        var minimumGapValue: Double = 0.2
+    var lowerValue: Double = 0.2
+    var upperValue: Double = 0.8
+    var minimumGapValue: Double = 0.2
+    var curvaceousness: CGFloat = 1.0
     
     // MARK: Range slider initialization
     
     init() {
         super.init(frame: .zero)
         addSublayers()
-//        addLabels()
         render()
         updateLayerFrames()
         clipsToBounds = false
-        delegate?.valuesDidChanged(values: (lowerValue: lowerValue, upperValue: upperValue))
+        delegate?.valuesDidChanged(values: RangeSlider.RangeSliderValues(
+            lowerValue: lowerValue,
+            upperValue: upperValue
+            )
+        )
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -136,7 +150,7 @@ class RangeSlider: UIControl {
         updateLayerFrames()
     }
     
-    // MARK: Override tracking UIControls methods
+    // MARK: UIControl touch tracking
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         previousLocation = touch.location(in: self)
@@ -152,14 +166,14 @@ class RangeSlider: UIControl {
         if lowerThumbLayer.isHighlighted {
             lowerValue += deltaValue
             lowerValue = boundValue(value: lowerValue, to: minimumValue, upperValue: upperValue - minimumGapValue)
-        } else if upperThumbLayer.isHighlighted{
+        } else if upperThumbLayer.isHighlighted {
             upperValue += deltaValue
             upperValue = boundValue(value: upperValue, to: lowerValue + minimumGapValue, upperValue: maximumValue)
         }
         previousLocation = location
         updateLayerFrames()
         sendActions(for: .valueChanged)
-        delegate?.valuesDidChanged(values: (lowerValue: lowerValue, upperValue: upperValue))
+        delegate?.valuesDidChanged(values: RangeSlider.RangeSliderValues(lowerValue: lowerValue, upperValue: upperValue))
         return true
     }
     
@@ -168,12 +182,14 @@ class RangeSlider: UIControl {
         upperThumbLayer.isHighlighted = false
     }
     
-    // MARK: Layers treatment
+    // MARK: Render
     
     private func render() {
         valueLabelStyle(minimumValueLabel)
         valueLabelStyle(maximumValueLabel)
     }
+    
+    // MARK: Layer methods
     
     private func addSublayers() {
         trackLayer.rangeSlider = self
@@ -187,20 +203,11 @@ class RangeSlider: UIControl {
         layer.addSublayer(upperThumbLayer)
     }
     
-    private func addLabels() {
-        addSubview(minimumValueLabel)
-        minimumValueLabel.text = "\(minimumValue)"
-        minimumValueLabel.sizeToFit()
-        addSubview(maximumValueLabel)
-        maximumValueLabel.text = "\(maximumValue)"
-        maximumValueLabel.sizeToFit()
-    }
-    
     private func updateLayerFrames() {
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
         let lowerThumbCenter = CGFloat(position(for: lowerValue))
         let upperThumbCenter = CGFloat(position(for: upperValue))
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         trackLayer.frame = bounds.insetBy(dx: 0.0, dy: bounds.height/2.1)
         trackLayer.setNeedsDisplay()
         lowerThumbLayer.frame = CGRect(
@@ -218,7 +225,7 @@ class RangeSlider: UIControl {
         CATransaction.commit()
     }
     
-    // Styles
+    // MARK: Styles
     
     private func valueLabelStyle(_ valueLabel: UILabel) {
         valueLabel.tintColor = .gray
