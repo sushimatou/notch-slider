@@ -116,18 +116,6 @@ class RangeSlider: UIControl {
         return CGFloat(bounds.height)
     }
     
-    var minimumValue: Double = 0.0 {
-        didSet {
-            minimumValueLabel.text = String(describing: minimumValue)
-        }
-    }
-    
-    var maximumValue: Double = 1.0 {
-        didSet {
-            maximumValueLabel.text = String(describing: maximumValue)
-        }
-    }
-    
     weak var delegate: RangeSliderDelegate?
 
     var trackTintColor = UIColor(white: 0.9, alpha: 1.0)
@@ -136,6 +124,8 @@ class RangeSlider: UIControl {
     var previousLocation = CGPoint()
     var lowerValue: Double = 0.2
     var upperValue: Double = 0.8
+    var minimumValue: Double = 0.0
+    var maximumValue: Double = 1.0
     var minimumGapValue: Double = 0.2
     var curvaceousness: CGFloat = 1.0
     
@@ -146,12 +136,10 @@ class RangeSlider: UIControl {
         addSublayers()
         render()
         updateLayerFrames()
-        clipsToBounds = false
         delegate?.valuesDidChanged(values: RangeSlider.RangeSliderValues(
             lowerValue: lowerValue,
             upperValue: upperValue
-            )
-        )
+        ))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -242,6 +230,8 @@ class RangeSlider: UIControl {
     private func valueLabelStyle(_ valueLabel: UILabel) {
         valueLabel.tintColor = .gray
     }
+    
+    // MARK: Value conversion methods
     
     fileprivate func position(for value: Double) -> Double {
         return Double(bounds.width - thumbWidth) * (value - minimumValue) / (maximumValue - minimumValue) + Double(thumbWidth / 2.0)
