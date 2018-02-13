@@ -80,6 +80,7 @@ class FilterTableViewController: UITableViewController {
             rangeSlider.maximumValue = 250
             rangeSlider.lowerValue = 60
             rangeSlider.upperValue = 190
+            rangeSlider.minimumGapValue = 20
             cell.rangeSlider = rangeSlider
             return cell
         default:

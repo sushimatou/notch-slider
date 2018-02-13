@@ -18,7 +18,6 @@ enum SliderValue {
     case end
 }
 
-
 class NotchSlider: UIView {
     
     // MARK: NotchView
@@ -183,23 +182,23 @@ class NotchSlider: UIView {
     
     // MARK: Styles
     
-    private func sliderStyle(_ s: UISlider) {
-        s.minimumValue = style.minimumValue
-        s.maximumValue = style.maximumValue
-        s.minimumTrackTintColor = style.primaryColor
-        s.maximumTrackTintColor = style.secondaryColor
+    private func sliderStyle(_ slider: UISlider) {
+        slider.minimumValue = style.minimumValue
+        slider.maximumValue = style.maximumValue
+        slider.minimumTrackTintColor = style.primaryColor
+        slider.maximumTrackTintColor = style.secondaryColor
     }
     
-    private func notchesStackViewStyle(_ n: UIStackView) {
-        n.axis = .horizontal
-        n.distribution = .equalSpacing
-        n.alignment = .bottom
+    private func notchesStackViewStyle(_ notchesStackView: UIStackView) {
+        notchesStackView.axis = .horizontal
+        notchesStackView.distribution = .equalSpacing
+        notchesStackView.alignment = .bottom
     }
     
-    private func valueLabelsStackViewStyle(_ v: UIStackView) {
-        v.axis = .horizontal
-        v.distribution = .equalSpacing
-        v.alignment = .bottom
+    private func valueLabelsStackViewStyle(_ valueLabelsStackView: UIStackView) {
+        valueLabelsStackView.axis = .horizontal
+        valueLabelsStackView.distribution = .equalSpacing
+        valueLabelsStackView.alignment = .bottom
     }
     
     // MARK: Layout

@@ -14,7 +14,7 @@ protocol RangeSliderDelegate : NSObjectProtocol {
 
 class RangeSlider: UIControl {
     
-    // MARK: Track Layer declaration
+    // MARK: Track Layer
     
     private final class RangeSliderTrackLayer: CALayer {
         weak var rangeSlider: RangeSlider?
@@ -44,10 +44,9 @@ class RangeSlider: UIControl {
                 ctx.fill(rect)
             }
         }
-        
     }
     
-    // MARK: Thumb Layer declaration
+    // MARK: Thumb Layer
     
     private final class RangeSliderThumbLayer: CALayer {
         var isHighlighted = false
@@ -68,7 +67,7 @@ class RangeSlider: UIControl {
         
     }
 
-    // Properties
+    // MARK: Properties
     
     private let trackLayer = RangeSliderTrackLayer()
     private let lowerThumbLayer = RangeSliderThumbLayer()
@@ -96,6 +95,18 @@ class RangeSlider: UIControl {
         }
     }
     
+    var lowerValue: Double = 0.2 {
+        didSet {
+            updateLayerFrames()
+        }
+    }
+    
+    var upperValue: Double = 0.8 {
+        didSet {
+            updateLayerFrames()
+        }
+    }
+    
     weak var delegate: RangeSliderDelegate?
 
     var trackTintColor = UIColor(white: 0.9, alpha: 1.0)
@@ -103,14 +114,15 @@ class RangeSlider: UIControl {
     var thumbTintColor = UIColor.white
     var curvaceousness: CGFloat = 1.0
     var previousLocation = CGPoint()
-    var lowerValue = 0.2
-    var upperValue = 0.8
+        var minimumGapValue: Double = 0.2
     
     // MARK: Range slider initialization
     
     init() {
         super.init(frame: .zero)
         addSublayers()
+//        addLabels()
+        render()
         updateLayerFrames()
         clipsToBounds = false
         delegate?.valuesDidChanged(values: (lowerValue: lowerValue, upperValue: upperValue))
@@ -137,12 +149,12 @@ class RangeSlider: UIControl {
         let location = touch.location(in: self)
         let deltaLocation = Double(location.x - previousLocation.x)
         let deltaValue = (maximumValue - minimumValue) * deltaLocation / Double(bounds.width - thumbWidth)
-        if lowerThumbLayer.isHighlighted && location.x < upperThumbLayer.position.x - thumbWidth {
+        if lowerThumbLayer.isHighlighted {
             lowerValue += deltaValue
-            lowerValue = boundValue(value: lowerValue, to: minimumValue, upperValue: upperValue)
-        } else if upperThumbLayer.isHighlighted && location.x > lowerThumbLayer.position.x + thumbWidth {
+            lowerValue = boundValue(value: lowerValue, to: minimumValue, upperValue: upperValue - minimumGapValue)
+        } else if upperThumbLayer.isHighlighted{
             upperValue += deltaValue
-            upperValue = boundValue(value: upperValue, to: lowerValue, upperValue: maximumValue)
+            upperValue = boundValue(value: upperValue, to: lowerValue + minimumGapValue, upperValue: maximumValue)
         }
         previousLocation = location
         updateLayerFrames()
@@ -158,7 +170,12 @@ class RangeSlider: UIControl {
     
     // MARK: Layers treatment
     
-    func addSublayers() {
+    private func render() {
+        valueLabelStyle(minimumValueLabel)
+        valueLabelStyle(maximumValueLabel)
+    }
+    
+    private func addSublayers() {
         trackLayer.rangeSlider = self
         lowerThumbLayer.rangeSlider = self
         upperThumbLayer.rangeSlider = self
@@ -170,7 +187,16 @@ class RangeSlider: UIControl {
         layer.addSublayer(upperThumbLayer)
     }
     
-    func updateLayerFrames() {
+    private func addLabels() {
+        addSubview(minimumValueLabel)
+        minimumValueLabel.text = "\(minimumValue)"
+        minimumValueLabel.sizeToFit()
+        addSubview(maximumValueLabel)
+        maximumValueLabel.text = "\(maximumValue)"
+        maximumValueLabel.sizeToFit()
+    }
+    
+    private func updateLayerFrames() {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         let lowerThumbCenter = CGFloat(position(for: lowerValue))
@@ -192,6 +218,12 @@ class RangeSlider: UIControl {
         CATransaction.commit()
     }
     
+    // Styles
+    
+    private func valueLabelStyle(_ valueLabel: UILabel) {
+        valueLabel.tintColor = .gray
+    }
+    
     fileprivate func position(for value: Double) -> Double {
         return Double(bounds.width - thumbWidth) * (value - minimumValue) / (maximumValue - minimumValue) + Double(thumbWidth / 2.0)
     }
@@ -201,4 +233,3 @@ class RangeSlider: UIControl {
     }
 
 }
-
