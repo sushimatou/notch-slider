@@ -162,6 +162,7 @@ class NotchSlider: UIView {
             let label = UILabel()
             label.text = "\(range + Int(style.minimumValue))"
             label.textAlignment = .center
+            label.sizeToFit()
             valueLabels.append(label)
         }
     }

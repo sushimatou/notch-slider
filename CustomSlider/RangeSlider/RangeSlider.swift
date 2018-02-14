@@ -27,7 +27,7 @@ class RangeSlider: UIControl {
     
     // MARK: Track Layer
     
-    private final class RangeSliderTrackLayer: CALayer {
+    private final class TrackLayer: CALayer {
         
         // MARK: Properties
         
@@ -65,33 +65,41 @@ class RangeSlider: UIControl {
     
     // MARK: Thumb Layer
     
-    private final class RangeSliderThumbLayer: CALayer {
+    private final class ThumbLayer: CAShapeLayer {
         
         // MARK: Properties
         
         var isHighlighted = false
         weak var rangeSlider: RangeSlider?
-        
-        
+
         // MARK: Layer drawing
         
         override func draw(in ctx: CGContext) {
             if let slider = rangeSlider {
-                let thumbFrame = CGRect(x: 0, y: 0, width: slider.thumbWidth, height: slider.thumbWidth)
-                let cornerRadius = thumbFrame.height * slider.curvaceousness / 2.0
+                let cornerRadius = slider.thumbWidth / 2
+                let thumbFrame = CGRect(x: bounds.midX - slider.thumbWidth / 2, y: bounds.midY - slider.thumbWidth / 2, width: slider.thumbWidth, height: slider.thumbWidth)
                 let thumbPath = UIBezierPath(roundedRect: thumbFrame, cornerRadius: cornerRadius)
+                let borderPath = UIBezierPath(roundedRect: thumbFrame, cornerRadius: cornerRadius)
+                borderPath.lineWidth = 1
+                borderPath.stroke()
+                ctx.setShadow(offset: CGSize(width: 0, height: 2), blur: 5, color: UIColor(red:0, green:0, blue:0, alpha:0.25).cgColor)
                 ctx.addPath(thumbPath.cgPath)
                 ctx.setFillColor(slider.thumbTintColor.cgColor)
                 ctx.fillPath()
+                borderPath.lineWidth = 10
             }
         }
         
         override init() {
             super.init()
-            shadowColor = UIColor(red:0.89, green:0.89, blue:0.89, alpha:1).cgColor
-            shadowOffset = CGSize(width: 0, height: 2)
-            shadowOpacity = 1.0;
-            shadowRadius = 4;
+            
+            let shadowLayer = CAShapeLayer()
+            shadowLayer.shadowColor = UIColor.black.cgColor
+            shadowLayer.shadowOffset = CGSize(width: 0, height: 4)
+            shadowLayer.shadowRadius = 2
+            shadowLayer.bounds = bounds
+            addSublayer(shadowLayer)
+            
         }
         
         required init?(coder aDecoder: NSCoder) {
@@ -102,18 +110,18 @@ class RangeSlider: UIControl {
 
     // MARK: Properties
     
-    private let trackLayer = RangeSliderTrackLayer()
-    private let lowerThumbLayer = RangeSliderThumbLayer()
-    private let upperThumbLayer = RangeSliderThumbLayer()
+    private let trackLayer = TrackLayer()
+    private let lowerThumbLayer = ThumbLayer()
+    private let upperThumbLayer = ThumbLayer()
     private let minimumValueLabel = UILabel()
     private let maximumValueLabel = UILabel()
     
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: CGFloat(bounds.width), height: 28)
+        return CGSize(width: CGFloat(bounds.width), height: 40)
     }
     
     var thumbWidth: CGFloat {
-        return CGFloat(bounds.height)
+        return CGFloat(29)
     }
     
     weak var delegate: RangeSliderDelegate?
@@ -198,6 +206,7 @@ class RangeSlider: UIControl {
         trackLayer.contentsScale = UIScreen.main.scale
         lowerThumbLayer.contentsScale = UIScreen.main.scale
         upperThumbLayer.contentsScale = UIScreen.main.scale
+        lowerThumbLayer.cornerRadius = 29 / 2
         layer.addSublayer(trackLayer)
         layer.addSublayer(lowerThumbLayer)
         layer.addSublayer(upperThumbLayer)
@@ -213,13 +222,13 @@ class RangeSlider: UIControl {
         lowerThumbLayer.frame = CGRect(
             x: lowerThumbCenter - thumbWidth / 2,
             y: 0.0,
-            width: thumbWidth,
-            height: thumbWidth)
+            width: frame.height,
+            height: frame.height)
         upperThumbLayer.frame = CGRect(
             x: upperThumbCenter - thumbWidth / 2,
             y: 0.0,
-            width: thumbWidth,
-            height: thumbWidth)
+            width: frame.height,
+            height: frame.height)
         lowerThumbLayer.setNeedsDisplay()
         upperThumbLayer.setNeedsDisplay()
         CATransaction.commit()
