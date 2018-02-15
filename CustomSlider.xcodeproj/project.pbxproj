@@ -90,22 +90,6 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
-		6B74033C202B378A00E45F71 /* RangeSlider */ = {
-			isa = PBXGroup;
-			children = (
-				6BC49BB8202DE07C00D4079A /* RangeSlider.swift */,
-			);
-			path = RangeSlider;
-			sourceTree = "<group>";
-		};
-		6B98DD232024A93200938D77 /* NotchSlider */ = {
-			isa = PBXGroup;
-			children = (
-				6BF7544420177D8100A70FFE /* NotchSlider.swift */,
-			);
-			path = NotchSlider;
-			sourceTree = "<group>";
-		};
 		6BA14C8120235674008354A6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +105,15 @@
 				6B627FCD202B557800EC08B5 /* AveragePriceTableViewCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		6BA277E92035793C0085F7D3 /* ViewComponents */ = {
+			isa = PBXGroup;
+			children = (
+				6BC49BB8202DE07C00D4079A /* RangeSlider.swift */,
+				6BF7544420177D8100A70FFE /* NotchSlider.swift */,
+			);
+			path = ViewComponents;
 			sourceTree = "<group>";
 		};
 		6BF7540A20177D3700A70FFE = {
@@ -146,8 +139,7 @@
 		6BF7541520177D3700A70FFE /* CustomSlider */ = {
 			isa = PBXGroup;
 			children = (
-				6B74033C202B378A00E45F71 /* RangeSlider */,
-				6B98DD232024A93200938D77 /* NotchSlider */,
+				6BA277E92035793C0085F7D3 /* ViewComponents */,
 				6BA14C822023567F008354A6 /* Cells */,
 				6B080EA32028A9B000DD0C23 /* ViewControllers */,
 				6BA14C8120235674008354A6 /* Views */,
