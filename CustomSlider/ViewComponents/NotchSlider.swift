@@ -52,8 +52,8 @@ class NotchSlider: UIView {
     
     struct NotchSliderStyle {
         static let defaultStyle = NotchSliderStyle(
-            primaryColor: UIColor.gray,
-            secondaryColor: UIColor.blue,
+            minimumTrackTintColor: UIColor.gray,
+            maximumTrackTintColor: UIColor.blue,
             minimumValue: 7,
             maximumValue: 10,
             textFont: UIFont(),
@@ -61,8 +61,8 @@ class NotchSlider: UIView {
             notchRadius: 2,
             notchesCount: 4,
             width: 50)
-        let primaryColor: UIColor
-        let secondaryColor: UIColor
+        let minimumTrackTintColor: UIColor
+        let maximumTrackTintColor: UIColor
         let minimumValue: Float
         let maximumValue: Float
         let textFont: UIFont
@@ -172,7 +172,7 @@ class NotchSlider: UIView {
     
     private func colorNotches(by value: Float) {
         for notchView in notchStackViews {
-            notchView.backgroundColor = Float(notchView.value) < value ? style.primaryColor : style.secondaryColor
+            notchView.backgroundColor = Float(notchView.value) < value ? style.minimumTrackTintColor : style.maximumTrackTintColor
         }
     }
     
@@ -196,8 +196,8 @@ class NotchSlider: UIView {
     private func sliderStyle(_ slider: UISlider) {
         slider.minimumValue = style.minimumValue
         slider.maximumValue = style.maximumValue
-        slider.minimumTrackTintColor = style.primaryColor
-        slider.maximumTrackTintColor = style.secondaryColor
+        slider.minimumTrackTintColor = style.minimumTrackTintColor
+        slider.maximumTrackTintColor = style.maximumTrackTintColor
     }
     
     private func notchesStackViewStyle(_ notchesStackView: UIStackView) {

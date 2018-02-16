@@ -58,8 +58,8 @@ class FilterTableViewController: UITableViewController {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: averageGradeCellReuseId) as! AverageGradeTableViewCell
             let notchSliderStyle = NotchSlider.NotchSliderStyle(
-                primaryColor: greenTheFork,
-                secondaryColor: grayTheFork,
+                minimumTrackTintColor: greenTheFork,
+                maximumTrackTintColor: grayTheFork,
                 minimumValue: 7,
                 maximumValue: 10,
                 textFont: UIFont(name: "Helvetica", size: 12)!,

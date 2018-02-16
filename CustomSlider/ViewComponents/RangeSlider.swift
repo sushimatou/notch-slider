@@ -130,6 +130,7 @@ class RangeSlider: UIControl {
     // MARK: UIControl touch tracking
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        impactGenerator.prepare()
         previousLocation = touch.location(in: self)
         isAbledToImpact = true
         lowerThumbView.isHighlighted = lowerThumbView.frame.contains(previousLocation)
@@ -141,20 +142,21 @@ class RangeSlider: UIControl {
         let location = touch.location(in: self)
         let deltaLocation = Double(location.x - previousLocation.x)
         let deltaValue = (maximumValue - minimumValue) * deltaLocation / Double(bounds.width - thumbWidth)
-        let lowerSideValue = (Double(lowerThumbView.frame.midX + thumbWidth)) * lowerValue / Double(lowerThumbView.frame.midX)
-        let upperSideValue = (Double(upperThumbView.frame.midX - thumbWidth)) * upperValue / Double(upperThumbView.frame.midX)
-        impactGenerator.prepare()
+        let lowerThumbCenter = CGFloat(position(for: lowerValue))
+        let upperThumbCenter = CGFloat(position(for: upperValue))
+        let lowerSideValue = Double(lowerThumbCenter + thumbWidth) * lowerValue / Double(lowerThumbCenter)
+        let upperSideValue = (Double(upperThumbCenter - thumbWidth)) * upperValue / Double(upperThumbCenter)
         
         if lowerThumbView.isHighlighted {
             lowerValue += deltaValue
-            lowerValue = boundValue(value: lowerValue, to: minimumValue, upperValue: upperSideValue)
+            lowerValue = boundValue(value: lowerValue, toLowerValue: minimumValue, toUpperValue: upperSideValue)
             if isAbledToImpact && lowerValue == minimumValue {
                 impactGenerator.impactOccurred()
                 isAbledToImpact = false
             }
         } else if upperThumbView.isHighlighted {
             upperValue += deltaValue
-            upperValue = boundValue(value: upperValue, to: lowerSideValue, upperValue: maximumValue)
+            upperValue = boundValue(value: upperValue, toLowerValue: lowerSideValue, toUpperValue: maximumValue)
             if isAbledToImpact && upperValue == maximumValue {
                 impactGenerator.impactOccurred()
                 isAbledToImpact = false
@@ -216,8 +218,8 @@ class RangeSlider: UIControl {
         return Double(bounds.width - thumbWidth) * (value - minimumValue) / (maximumValue - minimumValue) + Double(thumbWidth / 2.0)
     }
     
-    fileprivate func boundValue(value: Double, to lowerValue: Double, upperValue: Double) -> Double {
-        return min(max(value, lowerValue), upperValue)
+    fileprivate func boundValue(value: Double, toLowerValue: Double, toUpperValue: Double) -> Double {
+        return min(max(value, toLowerValue), toUpperValue)
     }
     
     // MARK: UI rendering
