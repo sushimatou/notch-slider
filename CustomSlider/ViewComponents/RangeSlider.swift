@@ -73,12 +73,14 @@ class RangeSlider: UIControl {
     }
 
     // MARK: Properties
-    
+
+    private let impactGenerator = UIImpactFeedbackGenerator(style: .light)
     private let trackLayer = TrackLayer()
     private let lowerThumbView = ThumbView()
     private let upperThumbView = ThumbView()
     private let minimumValueLabel = UILabel()
     private let maximumValueLabel = UILabel()
+    private var isAbledToImpact = false
     
     override var intrinsicContentSize: CGSize {
         return CGSize(width: CGFloat(bounds.width), height: 40)
@@ -129,6 +131,7 @@ class RangeSlider: UIControl {
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         previousLocation = touch.location(in: self)
+        isAbledToImpact = true
         lowerThumbView.isHighlighted = lowerThumbView.frame.contains(previousLocation)
         upperThumbView.isHighlighted = upperThumbView.frame.contains(previousLocation)
         return lowerThumbView.isHighlighted || upperThumbView.isHighlighted
@@ -138,13 +141,26 @@ class RangeSlider: UIControl {
         let location = touch.location(in: self)
         let deltaLocation = Double(location.x - previousLocation.x)
         let deltaValue = (maximumValue - minimumValue) * deltaLocation / Double(bounds.width - thumbWidth)
+        let lowerSideValue = (Double(lowerThumbView.frame.midX + thumbWidth)) * lowerValue / Double(lowerThumbView.frame.midX)
+        let upperSideValue = (Double(upperThumbView.frame.midX - thumbWidth)) * upperValue / Double(upperThumbView.frame.midX)
+        impactGenerator.prepare()
+        
         if lowerThumbView.isHighlighted {
             lowerValue += deltaValue
-            lowerValue = boundValue(value: lowerValue, to: minimumValue, upperValue: upperValue - minimumGapValue)
+            lowerValue = boundValue(value: lowerValue, to: minimumValue, upperValue: upperSideValue)
+            if isAbledToImpact && lowerValue == minimumValue {
+                impactGenerator.impactOccurred()
+                isAbledToImpact = false
+            }
         } else if upperThumbView.isHighlighted {
             upperValue += deltaValue
-            upperValue = boundValue(value: upperValue, to: lowerValue + minimumGapValue, upperValue: maximumValue)
+            upperValue = boundValue(value: upperValue, to: lowerSideValue, upperValue: maximumValue)
+            if isAbledToImpact && upperValue == maximumValue {
+                impactGenerator.impactOccurred()
+                isAbledToImpact = false
+            }
         }
+        
         previousLocation = location
         updateLayerFrames()
         sendActions(for: .valueChanged)
@@ -246,13 +262,13 @@ class RangeSlider: UIControl {
             view.backgroundColor = .white
             view.layer.cornerRadius = thumbWidth / 2
             view.layer.shadowOffset = CGSize(width: 0, height: 3.5)
-            view.layer.shadowColor = UIColor(red:0, green:0, blue:0, alpha:0.085).cgColor
+            view.layer.shadowColor = UIColor(red:0, green:0, blue:0.1, alpha:0.06).cgColor
             view.layer.shadowOpacity = 1
             view.layer.shadowRadius = 0.5
             return view
         }()
         
-        thumbView.backgroundColor = .white
+        thumbView.backgroundColor = .red
         thumbView.isUserInteractionEnabled = false
         thumbView.layer.cornerRadius = thumbWidth / 2
         thumbView.layer.borderWidth = 0.05
