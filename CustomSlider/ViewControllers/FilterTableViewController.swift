@@ -58,8 +58,8 @@ class FilterTableViewController: UITableViewController {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: averageGradeCellReuseId) as! AverageGradeTableViewCell
             let notchSliderStyle = NotchSlider.NotchSliderStyle(
-                minimumTrackTintColor: greenTheFork,
-                maximumTrackTintColor: grayTheFork,
+                primaryColor: greenTheFork,
+                secondaryColor: grayTheFork,
                 minimumValue: 7,
                 maximumValue: 10,
                 textFont: UIFont(name: "Helvetica", size: 12)!,
@@ -80,7 +80,6 @@ class FilterTableViewController: UITableViewController {
             rangeSlider.maximumValue = 250
             rangeSlider.lowerValue = 60
             rangeSlider.upperValue = 190
-            rangeSlider.minimumGapValue = 22
             cell.rangeSlider = rangeSlider
             return cell
         default:
@@ -138,6 +137,11 @@ extension FilterTableViewController: NotchSliderDelegate {
 // MARK: - Range slider delegate
 
 extension FilterTableViewController: RangeSliderDelegate {
+    
+    func valuesDidSet(values: RangeSlider.RangeSliderValues) {
+        
+    }
+    
     
     func valuesDidChanged(values: RangeSlider.RangeSliderValues) {
         let header = tableView.headerView(forSection: 1) as! SectionHeaderView

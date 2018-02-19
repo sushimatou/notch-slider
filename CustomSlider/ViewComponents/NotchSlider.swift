@@ -22,27 +22,24 @@ class NotchSlider: UIView {
     
     // MARK: NotchView
     
-    private final class NotchStackView: UIStackView {
+    private final class NotchView: UIView {
         
-        let pointView = UIView()
-        let valueLabel = UILabel()
         let value: Int
         let radius: CGFloat
         
+        override var intrinsicContentSize: CGSize {
+            return CGSize(width: radius * 2, height: radius * 2)
+        }
+        
         init(value: Int, radius: CGFloat) {
-            self.valueLabel.text = "\(value)"
-            self.pointView.frame.size = CGSize(width: 2, height: 2)
             self.value = value
             self.radius = radius
             super.init(frame: .zero)
-            alignment = .center
-            axis = .vertical
-            spacing = 10
             layer.cornerRadius = 4
             clipsToBounds = true
         }
         
-        required init(coder: NSCoder) {
+        required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
         
@@ -52,8 +49,8 @@ class NotchSlider: UIView {
     
     struct NotchSliderStyle {
         static let defaultStyle = NotchSliderStyle(
-            minimumTrackTintColor: UIColor.gray,
-            maximumTrackTintColor: UIColor.blue,
+            primaryColor: UIColor.gray,
+            secondaryColor: UIColor.blue,
             minimumValue: 7,
             maximumValue: 10,
             textFont: UIFont(),
@@ -61,8 +58,8 @@ class NotchSlider: UIView {
             notchRadius: 2,
             notchesCount: 4,
             width: 50)
-        let minimumTrackTintColor: UIColor
-        let maximumTrackTintColor: UIColor
+        let primaryColor: UIColor
+        let secondaryColor: UIColor
         let minimumValue: Float
         let maximumValue: Float
         let textFont: UIFont
@@ -73,11 +70,11 @@ class NotchSlider: UIView {
     }
     
     // MARK: Properties
-
+    
     private let style: NotchSliderStyle
     private let slider = UISlider()
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
-    private var notchStackViews = [NotchStackView]()
+    private var notchViews = [NotchView]()
     private var valueLabels = [UILabel]()
     private var notchesStackView = UIStackView()
     private var labelsStackView = UIStackView()
@@ -108,10 +105,10 @@ class NotchSlider: UIView {
         let frame = CGRect(x: 0, y: 0, width: style.width, height: 50)
         super.init(frame: frame)
         addTargetForSlider()
-        createNotchStackViews()
+        createNotches()
         createLabels()
         createNotchesStackView()
-        addValueLabels()
+        createLabelsStackView()
         colorNotches(by: slider.value)
         render()
         layout()
@@ -130,7 +127,7 @@ class NotchSlider: UIView {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         feedbackGenerator.prepare()
     }
-
+    
     @objc private func valueDidChanged() {
         delegate?.valueDidChange(sliderValue: sliderValue)
         colorNotches(by: slider.value)
@@ -153,10 +150,10 @@ class NotchSlider: UIView {
     
     // MARK: Slider Creation
     
-    private func createNotchStackViews() {
+    private func createNotches() {
         for range in 0..<style.notchesCount {
-            let notchStackView = NotchStackView(value: range + Int(style.minimumValue), radius: CGFloat(style.notchRadius))
-            notchStackViews.append(notchStackView)
+            let view = NotchView(value: range + Int(style.minimumValue), radius: CGFloat(style.notchRadius))
+            notchViews.append(view)
         }
     }
     
@@ -171,24 +168,17 @@ class NotchSlider: UIView {
     }
     
     private func colorNotches(by value: Float) {
-        for notchView in notchStackViews {
-            notchView.backgroundColor = Float(notchView.value) < value ? style.minimumTrackTintColor : style.maximumTrackTintColor
+        for notchView in notchViews {
+            notchView.backgroundColor = Float(notchView.value) < value ? style.primaryColor : style.secondaryColor
         }
     }
     
     private func createNotchesStackView() {
-        notchesStackView = UIStackView(arrangedSubviews: notchStackViews)
+        notchesStackView = UIStackView(arrangedSubviews: notchViews)
     }
     
-    private func addValueLabels() {
-        for range in 0..<style.notchesCount {
-            valueLabels[range].frame = CGRect(
-                x: notchesStackView.arrangedSubviews[range].frame.midX,
-                y: valueLabels[range].frame.origin.y,
-                width: 10,
-                height: 10)
-            valueLabels[range].sizeToFit()
-        }
+    private func createLabelsStackView() {
+        labelsStackView = UIStackView(arrangedSubviews: valueLabels)
     }
     
     // MARK: Styles
@@ -196,8 +186,8 @@ class NotchSlider: UIView {
     private func sliderStyle(_ slider: UISlider) {
         slider.minimumValue = style.minimumValue
         slider.maximumValue = style.maximumValue
-        slider.minimumTrackTintColor = style.minimumTrackTintColor
-        slider.maximumTrackTintColor = style.maximumTrackTintColor
+        slider.minimumTrackTintColor = style.primaryColor
+        slider.maximumTrackTintColor = style.secondaryColor
     }
     
     private func notchesStackViewStyle(_ notchesStackView: UIStackView) {
@@ -241,3 +231,4 @@ class NotchSlider: UIView {
     }
     
 }
+

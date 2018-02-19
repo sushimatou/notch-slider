@@ -12,6 +12,7 @@ import UIKit
 
 protocol RangeSliderDelegate : NSObjectProtocol {
     func valuesDidChanged(values: RangeSlider.RangeSliderValues)
+    func valuesDidSet(values: RangeSlider.RangeSliderValues)
 }
 
 class RangeSlider: UIControl {
@@ -80,6 +81,7 @@ class RangeSlider: UIControl {
     private let upperThumbView = ThumbView()
     private let minimumValueLabel = UILabel()
     private let maximumValueLabel = UILabel()
+    private var previousLocation = CGPoint()
     private var isAbledToImpact = false
     
     override var intrinsicContentSize: CGSize {
@@ -92,15 +94,13 @@ class RangeSlider: UIControl {
     
     weak var delegate: RangeSliderDelegate?
 
-    var trackTintColor = UIColor(white: 0.9, alpha: 1.0)
-    var trackHighlightTintColor = UIColor.blue
-    var thumbTintColor = UIColor.white
-    var previousLocation = CGPoint()
+    var trackTintColor: UIColor = UIColor(white: 0.9, alpha: 1.0)
+    var trackHighlightTintColor: UIColor = UIColor.blue
+    var thumbTintColor: UIColor = UIColor.white
     var lowerValue: Double = 0.2
     var upperValue: Double = 0.8
     var minimumValue: Double = 0.0
     var maximumValue: Double = 1.0
-    var minimumGapValue: Double = 0.2
     var curvaceousness: CGFloat = 1.0
     
     // MARK: Range slider initialization
@@ -131,48 +131,61 @@ class RangeSlider: UIControl {
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         impactGenerator.prepare()
-        previousLocation = touch.location(in: self)
         isAbledToImpact = true
+        previousLocation = touch.location(in: self)
         lowerThumbView.isHighlighted = lowerThumbView.frame.contains(previousLocation)
         upperThumbView.isHighlighted = upperThumbView.frame.contains(previousLocation)
         return lowerThumbView.isHighlighted || upperThumbView.isHighlighted
     }
     
     override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-        let location = touch.location(in: self)
+        let location = touch.preciseLocation(in: self)
         let deltaLocation = Double(location.x - previousLocation.x)
         let deltaValue = (maximumValue - minimumValue) * deltaLocation / Double(bounds.width - thumbWidth)
-        let lowerThumbCenter = CGFloat(position(for: lowerValue))
-        let upperThumbCenter = CGFloat(position(for: upperValue))
-        let lowerSideValue = Double(lowerThumbCenter + thumbWidth) * lowerValue / Double(lowerThumbCenter)
-        let upperSideValue = (Double(upperThumbCenter - thumbWidth)) * upperValue / Double(upperThumbCenter)
+        let thumbValue = Double(thumbWidth * bounds.width - thumbWidth) / maximumValue - minimumValue
         
         if lowerThumbView.isHighlighted {
             lowerValue += deltaValue
-            lowerValue = boundValue(value: lowerValue, toLowerValue: minimumValue, toUpperValue: upperSideValue)
-            if isAbledToImpact && lowerValue == minimumValue {
-                impactGenerator.impactOccurred()
-                isAbledToImpact = false
-            }
+            lowerValue = boundValue(
+                value: lowerValue,
+                toLowerValue: minimumValue,
+                toUpperValue: upperValue - thumbValue
+            )
+
         } else if upperThumbView.isHighlighted {
             upperValue += deltaValue
-            upperValue = boundValue(value: upperValue, toLowerValue: lowerSideValue, toUpperValue: maximumValue)
-            if isAbledToImpact && upperValue == maximumValue {
-                impactGenerator.impactOccurred()
-                isAbledToImpact = false
-            }
+            upperValue = boundValue(
+                value: upperValue,
+                toLowerValue: lowerValue + thumbValue,
+                toUpperValue: maximumValue
+            )
         }
+        
+        if isAbledToImpact && (upperValue == maximumValue || lowerValue == minimumValue) {
+            impactGenerator.impactOccurred()
+            isAbledToImpact = false
+        }
+        
+        delegate?.valuesDidChanged(values: RangeSlider.RangeSliderValues(
+            lowerValue: lowerValue,
+            upperValue: upperValue
+            )
+        )
         
         previousLocation = location
         updateLayerFrames()
         sendActions(for: .valueChanged)
-        delegate?.valuesDidChanged(values: RangeSlider.RangeSliderValues(lowerValue: lowerValue, upperValue: upperValue))
         return true
     }
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         lowerThumbView.isHighlighted = false
         upperThumbView.isHighlighted = false
+    }
+    
+    internal func setValues(lowerValue: Double, upperValue: Double) {
+        self.lowerValue = lowerValue
+        self.upperValue = upperValue
     }
     
     // MARK: Layer methods
@@ -193,26 +206,25 @@ class RangeSlider: UIControl {
     private func updateLayerFrames() {
         let lowerThumbCenter = CGFloat(position(for: lowerValue))
         let upperThumbCenter = CGFloat(position(for: upperValue))
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
         trackLayer.frame = bounds.insetBy(dx: 0.0, dy: bounds.height/2.1)
         trackLayer.setNeedsDisplay()
+        
         lowerThumbView.frame = CGRect(
             x: lowerThumbCenter - thumbWidth / 2,
             y: trackLayer.frame.midY - thumbWidth / 2,
             width: thumbWidth,
-            height: thumbWidth)
+            height: thumbWidth
+        )
+        
         upperThumbView.frame = CGRect(
             x: upperThumbCenter - thumbWidth / 2,
             y: trackLayer.frame.midY - thumbWidth / 2,
             width: thumbWidth,
-            height: thumbWidth)
-        lowerThumbView.setNeedsDisplay()
-        upperThumbView.setNeedsDisplay()
-        CATransaction.commit()
+            height: thumbWidth
+        )
     }
     
-    // MARK: Value conversion methods
+    // MARK: Position - value conversion methods
     
     fileprivate func position(for value: Double) -> Double {
         return Double(bounds.width - thumbWidth) * (value - minimumValue) / (maximumValue - minimumValue) + Double(thumbWidth / 2.0)
@@ -279,6 +291,7 @@ class RangeSlider: UIControl {
         thumbView.addSubview(strongShadow)
         thumbView.addSubview(shadow)
         thumbView.addSubview(lightShadow)
+    
     }
 
 }
