@@ -83,16 +83,12 @@ class RangeSlider: UIControl {
     private let maximumValueLabel = UILabel()
     private var previousLocation = CGPoint()
     private var isAbledToImpact = false
+
+    weak var delegate: RangeSliderDelegate?
     
     override var intrinsicContentSize: CGSize {
         return CGSize(width: CGFloat(bounds.width), height: 40)
     }
-    
-    var thumbWidth: CGFloat {
-        return CGFloat(29)
-    }
-    
-    weak var delegate: RangeSliderDelegate?
 
     var trackTintColor: UIColor = UIColor(white: 0.9, alpha: 1.0)
     var trackHighlightTintColor: UIColor = UIColor.blue
@@ -102,6 +98,10 @@ class RangeSlider: UIControl {
     var minimumValue: Double = 0.0
     var maximumValue: Double = 1.0
     var curvaceousness: CGFloat = 1.0
+    
+    var thumbWidth: CGFloat {
+        return CGFloat(29)
+    }
     
     // MARK: Range slider initialization
     
@@ -146,24 +146,27 @@ class RangeSlider: UIControl {
         
         if lowerThumbView.isHighlighted {
             lowerValue += deltaValue
-            lowerValue = boundValue(
+            lowerValue = bound(
                 value: lowerValue,
                 toLowerValue: minimumValue,
                 toUpperValue: upperValue - thumbValue
             )
+            if isAbledToImpact && (lowerValue == minimumValue) {
+                impactGenerator.impactOccurred()
+                isAbledToImpact = false
+            }
 
         } else if upperThumbView.isHighlighted {
             upperValue += deltaValue
-            upperValue = boundValue(
+            upperValue = bound(
                 value: upperValue,
                 toLowerValue: lowerValue + thumbValue,
                 toUpperValue: maximumValue
             )
-        }
-        
-        if isAbledToImpact && (upperValue == maximumValue || lowerValue == minimumValue) {
-            impactGenerator.impactOccurred()
-            isAbledToImpact = false
+            if isAbledToImpact && (upperValue == maximumValue) {
+                impactGenerator.impactOccurred()
+                isAbledToImpact = false
+            }
         }
         
         delegate?.valuesDidChanged(values: RangeSlider.RangeSliderValues(
@@ -174,16 +177,20 @@ class RangeSlider: UIControl {
         
         previousLocation = location
         updateLayerFrames()
-        sendActions(for: .valueChanged)
         return true
     }
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         lowerThumbView.isHighlighted = false
         upperThumbView.isHighlighted = false
+        delegate?.valuesDidSet(values: RangeSlider.RangeSliderValues(
+            lowerValue: lowerValue,
+            upperValue: upperValue
+            )
+        )
     }
     
-    internal func setValues(lowerValue: Double, upperValue: Double) {
+    public func setValues(lowerValue: Double, upperValue: Double) {
         self.lowerValue = lowerValue
         self.upperValue = upperValue
     }
@@ -230,7 +237,7 @@ class RangeSlider: UIControl {
         return Double(bounds.width - thumbWidth) * (value - minimumValue) / (maximumValue - minimumValue) + Double(thumbWidth / 2.0)
     }
     
-    fileprivate func boundValue(value: Double, toLowerValue: Double, toUpperValue: Double) -> Double {
+    fileprivate func bound(value: Double, toLowerValue: Double, toUpperValue: Double) -> Double {
         return min(max(value, toLowerValue), toUpperValue)
     }
     
